@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Stella nel Cerchio</title>
+</head>
+<body>
+<canvas id="myCanvas" width="300" height="300" style="border:1px solid #ccc;"></canvas>
+
+<script>
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+const cx = 150;
+const cy = 150;
+const r = 120;
+
+ctx.beginPath();
+ctx.arc(cx, cy, r, 0, Math.PI * 2);
+ctx.stroke();
+ctx.beginPath();
+
+const punte = 5;           // numero punte
+const rInterno = r * 0.45; // raggio dei punti interni
+
+let angolo = -Math.PI / 2; // inizia verso l'alto
+
+for (let i = 0; i < punte * 2; i++) {
+    const useRadius = i % 2 === 0 ? r : rInterno;
+    const x = cx + Math.cos(angolo) * useRadius;
+    const y = cy + Math.sin(angolo) * useRadius;
+
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+
+    angolo += Math.PI / punte;
+}
+
+ctx.closePath();
+ctx.stroke();
+</script>
+</body>
+</html>
