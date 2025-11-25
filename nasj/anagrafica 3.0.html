@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form</title>
+
+ 
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
 <div class="input-grid">
     <!-- Dati anagrafici -->
     <div class="input-row">
@@ -40,11 +52,11 @@
       </div>
     </div>
 
-    <!-- Provincia (combobox) -->
+ 
     <div class="input-row">
       <label for="provincia">Provincia:</label>
       <select id="provincia">
-        <option value="">-- Seleziona provincia --</option>
+        <option value="">-- Seleziona provincia --
         <option value="AG">Agrigento</option>
         <option value="AL">Alessandria</option>
         <option value="AN">Ancona</option>
@@ -157,8 +169,6 @@
         <option value="VT">Viterbo</option>
       </select>
     </div>
-    
-    <!-- Mezzi (checkbox) -->
     <div class="input-row">
       <label>Mezzi:</label>
       <div>
@@ -171,7 +181,6 @@
       </div>
     </div>
     
-    <!-- Materie preferite (listbox multipla, max 3) -->
     <div class="input-row">
       <label for="materie">Materie preferite (max 3):</label>
       <select id="materie" multiple="multiple" size="6">
@@ -192,11 +201,20 @@
       </p>
     </div>
 
-    
     <div class="actions">
       <button type="button" onclick="stampaDati()">Invia</button>
     </div>
   </div>
-</div>
 
 <div id="output"></div>
+
+<script>
+function stampaDati() {
+  const out = document.getElementById("output");
+  out.style.display = "block";
+  out.innerHTML = "Dati inviati!";
+}
+</script>
+
+</body>
+</html>
