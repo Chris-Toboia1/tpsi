@@ -159,7 +159,6 @@
           </select>
         </div>
         
-        <!-- Mezzi (checkbox) -->
         <div class="input-row">
           <label>Mezzi:</label>
           <div>
@@ -205,12 +204,12 @@
   <script>
     function stampaDati() {
       let user = {};
-      user.nome = document.getElementById("nome").value.trim();
-      user.cognome = document.getElementById("cognome").value.trim();
-      user.indirizzo = document.getElementById("indirizzo").value.trim();
-      user.citta = document.getElementById("citta").value.trim();
-      user.cap = document.getElementById("cap").value.trim();
-      user.anno = document.getElementById("anno").value.trim();
+      user.nome = document.getElementById("nome");
+      user.cognome = document.getElementById("cognome");
+      user.indirizzo = document.getElementById("indirizzo");
+      user.citta = document.getElementById("citta");
+      user.cap = document.getElementById("cap");
+      user.anno = document.getElementById("anno");
     
       let selezioneSesso = document.querySelector('input[name="sesso"]:checked');
       if (selezioneSesso) {
@@ -219,7 +218,13 @@
           user.sesso = "Non specificato";
       }
     
-      user.provincia = document.getElementById("provincia").value || "Non selezionata";
+      let provincia = document.getElementById("provincia").value 
+        if (provincia === "") {
+      user.provincia = "Non selezionata";
+        } else {
+          user.provincia = provincia;
+}
+
     
       let mezziSelezionati = document.querySelectorAll('input[name="mezzi"]:checked');
       user.mezzi = [];
@@ -229,14 +234,24 @@
 
       if (user.mezzi.length === 0) user.mezzi = ["Nessuno"];
     
-      let materieSel = Array.from(document.getElementById("materie").selectedOptions).map(opt => opt.value);
-    
+      let materieSel = [];
+let options = document.getElementById("materie").selectedOptions;
+
+for (let i = 0; i < options.length; i++) {
+    materieSel.push(options[i].value);
+}
+
       if (materieSel.length > 3) {
         alert("Puoi selezionare al massimo 3 materie!");
         return;
       }
     
-      user.materie = materieSel.length ? materieSel : ["Nessuna"];
+      if (materieSel.length > 0) {
+        user.materie = materieSel;
+      } else {
+        user.materie = ["Nessuna"];
+}
+
     
       if (!user.nome || !user.cognome || user.anno === "") {
         alert("Compila almeno Nome, Cognome e Anno di nascita!");
