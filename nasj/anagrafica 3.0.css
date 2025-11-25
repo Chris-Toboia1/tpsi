@@ -1,0 +1,126 @@
+/* Layout principale */
+.input-grid {
+  max-width: 650px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #1e1f23;
+  border-radius: 14px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.6);
+  font-family: "Poppins", sans-serif;
+  color: #e6e6e6;
+}
+
+/* Righe del form */
+.input-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+/* Etichette */
+.input-row label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #f0f0f0;
+}
+
+/* Campi input / select */
+.input-row input[type="text"],
+.input-row input[type="number"],
+.input-row select {
+  padding: 10px 12px;
+  border: 2px solid #3a3b40;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.25s ease;
+  background: #2b2d31;
+  color: #fff;
+}
+
+/* Focus animato */
+.input-row input:focus,
+.input-row select:focus {
+  outline: none;
+  border-color: #6aa8ff;
+  background: #323439;
+  box-shadow: 0 0 10px rgba(106,168,255,0.4);
+}
+
+/* Checkbox e radio */
+.input-row input[type="checkbox"],
+.input-row input[type="radio"] {
+  margin-right: 6px;
+  transform: scale(1.1);
+  accent-color: #6aa8ff;  /* colore del check */
+}
+
+/* Listbox multipla */
+#materie {
+  border: 2px solid #3a3b40;
+  border-radius: 8px;
+  background: #2b2d31;
+  padding: 8px;
+  color: #fff;
+  transition: 0.25s;
+}
+
+#materie:focus {
+  border-color: #6aa8ff;
+  box-shadow: 0 0 10px rgba(106,168,255,0.4);
+}
+
+/* Pulsante INVIA */
+.actions {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.actions button {
+  background: linear-gradient(135deg, #6aa8ff, #3f6cd4);
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(106,168,255,0.4);
+}
+
+/* Output box */
+#output {
+  max-width: 650px;
+  margin: 25px auto;
+  padding: 20px;
+  background: #26282d;
+  border-left: 4px solid #6aa8ff;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  color: #e6e6e6;
+  display: none;
+}
+
+/* Responsività */
+@media (min-width: 600px) {
+  .input-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .input-row label {
+    width: 180px;
+    margin-bottom: 0;
+  }
+
+  .input-row input,
+  .input-row select,
+  .input-row div {
+    flex: 1;
+  }
+}
