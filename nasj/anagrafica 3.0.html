@@ -208,13 +208,78 @@
 
 <div id="output"></div>
 
-<script>
-function stampaDati() {
-  const out = document.getElementById("output");
-  out.style.display = "block";
-  out.innerHTML = "Dati inviati!";
-}
-</script>
+ <script>
+    function stampaDati() {
+      let user = {};
+      user.nome = document.getElementById("nome").value.trim();
+      user.cognome = document.getElementById("cognome").value.trim();
+      user.indirizzo = document.getElementById("indirizzo").value.trim();
+      user.citta = document.getElementById("citta").value.trim();
+      user.cap = document.getElementById("cap").value.trim();
+      user.anno = document.getElementById("anno").value.trim();
+    
+      let selezioneSesso = document.querySelector('input[name="sesso"]:checked');
+      user.sesso = selezioneSesso ? selezioneSesso.value : "Non specificato";
+    
+      user.provincia = document.getElementById("provincia").value || "Non selezionata";
+    
+      let mezziSelezionati = document.querySelectorAll('input[name="mezzi"]:checked');
+      user.mezzi = Array.from(mezziSelezionati).map(m => m.value);
+      if (user.mezzi.length === 0) user.mezzi = ["Nessuno"];
+    
+      let materieSel = Array.from(document.getElementById("materie").selectedOptions).map(opt => opt.value);
+    
+      // Limite massimo 3 materie
+      if (materieSel.length > 3) {
+        alert("Puoi selezionare al massimo 3 materie!");
+        return;
+      }
+    
+      user.materie = materieSel.length ? materieSel : ["Nessuna"];
+    
+      if (!user.nome || !user.cognome || user.anno === "") {
+        alert("Compila almeno Nome, Cognome e Anno di nascita!");
+        return;
+      }
+    
+      const anno = parseInt(user.anno, 10);
+      if (isNaN(anno)) {
+        alert("Anno di nascita non valido");
+        return;
+      }
+    
+      const eta = new Date().getFullYear() - anno;
+      let gen = "";
+      if (anno >= 1901 && anno <= 1927) gen = "Greatest Generation";
+      else if (anno >= 1928 && anno <= 1945) gen = "Generazione Silenziosa";
+      else if (anno >= 1946 && anno <= 1964) gen = "Baby Boomers";
+      else if (anno >= 1965 && anno <= 1980) gen = "Generazione X";
+      else if (anno >= 1981 && anno <= 1996) gen = "Millennials";
+      else if (anno >= 1997 && anno <= 2012) gen = "Generazione Z";
+      else if (anno >= 2013) gen = "Generazione Alpha";
+      else gen = "Anno non valido o troppo lontano nel tempo";
+    
+      const outputDiv = document.getElementById("output");
+      outputDiv.style.display = "block";
+      outputDiv.innerHTML = `
+        <h3>Dati inseriti:</h3>
+        <div><strong>Nome:</strong> ${user.nome}</div>
+        <div><strong>Cognome:</strong> ${user.cognome}</div>
+        <div><strong>Indirizzo:</strong> ${user.indirizzo}</div>
+        <div><strong>Città:</strong> ${user.citta}</div>
+        <div><strong>Provincia:</strong> ${user.provincia}</div>
+        <div><strong>CAP:</strong> ${user.cap}</div>
+        <div><strong>Sesso:</strong> ${user.sesso}</div>
+        <div><strong>Anno di nascita:</strong> ${user.anno}</div>
+        <div><strong>Età:</strong> ${eta} anni</div>
+        <div><strong>Generazione:</strong> ${gen}</div>
+        <div><strong>Mezzi:</strong> ${user.mezzi.join(", ")}</div>
+        <div><strong>Materie preferite:</strong> ${user.materie.join(", ")}</div>
+      `;
+    }
+  </script>
+</body>
+</html>
 
 </body>
 </html>
