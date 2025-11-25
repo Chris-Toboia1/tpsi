@@ -224,17 +224,24 @@
       user.anno = document.getElementById("anno").value.trim();
     
       let selezioneSesso = document.querySelector('input[name="sesso"]:checked');
-      user.sesso = selezioneSesso ? selezioneSesso.value : "Non specificato";
+      if (selezioneSesso) {
+          user.sesso = selezioneSesso.value;
+      } else {
+          user.sesso = "Non specificato";
+      }
     
       user.provincia = document.getElementById("provincia").value || "Non selezionata";
     
       let mezziSelezionati = document.querySelectorAll('input[name="mezzi"]:checked');
-      user.mezzi = Array.from(mezziSelezionati).map(m => m.value);
+      user.mezzi = [];
+      for (let i = 0; i < mezziSelezionati.length; i++) {
+        user.mezzi.push(mezziSelezionati[i].value);
+}
+
       if (user.mezzi.length === 0) user.mezzi = ["Nessuno"];
     
       let materieSel = Array.from(document.getElementById("materie").selectedOptions).map(opt => opt.value);
     
-      // Limite massimo 3 materie
       if (materieSel.length > 3) {
         alert("Puoi selezionare al massimo 3 materie!");
         return;
