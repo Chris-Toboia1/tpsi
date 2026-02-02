@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Receiver</title>
+</head>
+<body>
+    <h2>Pagina Receiver</h2>
+
+    <p>Parametro 1: <span id="out1"></span></p>
+    <p>Parametro 2: <span id="out2"></span></p>
+
+    <script>
+        let p1 = localStorage.getItem("parametro1");
+        let p2 = localStorage.getItem("parametro2");
+
+        document.getElementById("out1").textContent = p1;
+        document.getElementById("out2").textContent = p2;
+    </script>
+</body>
+</html>
