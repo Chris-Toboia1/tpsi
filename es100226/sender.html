@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="it"><head>
+<html lang="it">
+<head>
     <meta charset="UTF-8">
     <title>Sender</title>
 </head>
@@ -8,31 +9,26 @@
     <div class="container">
         <h2>Pagina Sender</h2>
 
-        <label>Parametro 1</label>
-        <input type="text" id="param1">
+        <label>Parametro 1</label><br>
+        <input type="text" id="param1"><br><br>
 
-        <label>Parametro 2</label>
-        <input type="text" id="param2">
+        <label>Parametro 2</label><br>
+        <input type="text" id="param2"><br><br>
 
-        <button onclick="salvaParametri()"> Invia </button>
-
-       
+        <button onclick="salvaParametri()">Invia</button>
     </div>
 
-<script>
-    let p1 = "";
-    let p2 = "";
+    <script>
+        function salvaParametri() {
+            const p1 = document.getElementById("param1").value;
+            const p2 = document.getElementById("param2").value;
 
-    function salvaParametri() {
-        p1 = document.getElementById("param1").value;
-        p2 = document.getElementById("param2").value;
+            window.location.href =
+                "receiver.html?param1=" + encodeURIComponent(p1) +
+                "&param2=" + encodeURIComponent(p2);
+        }
+    </script>
 
-        window.location.href =
-            "receiver.html?param1=" + encodeURIComponent(p1) +
-            "&param2=" + encodeURIComponent(p2);
-    }
-</script>
-        
+</body>
+</html>
 
-
-</body></html>
