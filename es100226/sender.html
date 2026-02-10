@@ -16,7 +16,7 @@
 
         <button onclick="salvaParametri()"> Invia </button>
 
-        <button onclick="vaiReceiver()"> Vai al Receiver </button>
+       
     </div>
 
 <script>
@@ -26,19 +26,13 @@
     function salvaParametri() {
         p1 = document.getElementById("param1").value;
         p2 = document.getElementById("param2").value;
-    }
 
-    function vaiReceiver() {
         window.location.href =
             "receiver.html?param1=" + encodeURIComponent(p1) +
             "&param2=" + encodeURIComponent(p2);
     }
 </script>
-        function vaiReceiver() {
-            window.location.href ="receiver.html?param1=" + encodeURIComponent(p1) + "&param2=" + encodeURIComponent(p2);
-        }
-    </script>
-
+        
 
 
 </body></html>
