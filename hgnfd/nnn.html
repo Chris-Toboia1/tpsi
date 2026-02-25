@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Registrazione dati</title>
+</head>
 
+<body>
+
+<div>
+<h2>Inserisci i tuoi dati</h2>
+
+<div>
+<label for="nome">Nome:</label>
+<input type="text" id="nome">
+</div>
+
+<div>
+<label for="cognome">Cognome:</label>
+<input type="text" id="cognome">
+</div>
+
+<div>
+<label for="email">Email:</label>
+<input type="text" id="email">
+</div>
+
+<div>
+<label for="cap">CAP:</label>
+<input type="text" id="cap">
+</div>
+
+<div>
+<label for="codiceFiscale">Codice Fiscale:</label>
+<input type="text" id="codiceFiscale">
+</div>
+
+<div>
+<label for="anno">Anno di nascita:</label>
+<input type="number" id="anno" min="1900" max="2025">
+</div>
+
+<div>
+<button type="button" onclick="stampaDati()">Invia</button>
+</div>
+
+<div id="output"></div>
+</div>
+
+<script>
+function stampaDati() {
+
+    const user = {};
+
+    user.nome = document.getElementById("nome").value;
+    user.cognome = document.getElementById("cognome").value;
+    user.email = document.getElementById("email").value;
+    user.cap = document.getElementById("cap").value;
+    user.codiceFiscale = document.getElementById("codiceFiscale").value.toUpperCase();
+    user.anno = document.getElementById("anno").value;
+
+    const nomePattern = /^[A-Za-zÀ-ÿ\s]{2,30}$/;
+    const capPattern = /^\d{5}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const codiceFiscalePattern = /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/;
+
+    if (!user.nome || !user.cognome || !user.email || !user.cap || !user.codiceFiscale || user.anno === "") {
+        alert("Compila tutti i campi!");
+        return;
+    }
+
+    if (!nomePattern.test(user.nome)) {
+        alert("Nome non valido (solo lettere, minimo 2 caratteri)");
+        return;
+    }
+
+    if (!nomePattern.test(user.cognome)) {
+        alert("Cognome non valido (solo lettere, minimo 2 caratteri)");
+        return;
+    }
+
+    if (!capPattern.test(user.cap)) {
+        alert("CAP non valido (5 numeri)");
+        return;
+    }
+
+    if (!emailPattern.test(user.email)) {
+        alert("Email non valida");
+        return;
+    }
+
+    if (!codiceFiscalePattern.test(user.codiceFiscale)) {
+        alert("Codice Fiscale non valido (16 caratteri corretti)");
+        return;
+    }
+
+    const anno = parseInt(user.anno, 10);
+    if (isNaN(anno)) {
+        alert("Anno non valido");
+        return;
+    }
+
+    const eta = new Date().getFullYear() - anno;
+
+    const outputDiv = document.getElementById("output");
+    outputDiv.style.display = "block";
+
+    outputDiv.innerHTML =
+        "<h3>Dati inseriti:</h3>" +
+        "<div><strong>Nome:</strong> " + user.nome + "</div>" +
+        "<div><strong>Cognome:</strong> " + user.cognome + "</div>" +
+        "<div><strong>Email:</strong> " + user.email + "</div>" +
+        "<div><strong>CAP:</strong> " + user.cap + "</div>" +
+        "<div><strong>Codice Fiscale:</strong> " + user.codiceFiscale + "</div>" +
+        "<div><strong>Età:</strong> " + eta + " anni</div>";
+}
+</script>
+
+</body>
+</html>
