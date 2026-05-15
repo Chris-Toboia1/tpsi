@@ -1,46 +1,29 @@
 export const vehicles = [
   {
     id: 1,
-    name: "Volkswagen California T6",
-    brand: "Volkswagen",
-    year: 2022,
+    name: "Apex Expedition Van",
+    brand: "Mercedes 4x4",
     category: "van",
-    price: 65000,
-    image: "https://placehold.co/600x400/2e7d32/FFF?text=VW+California",
-    description: "Il van compatto per eccellenza, perfetto per le fughe nel weekend. Tetto a soffietto e cucina integrata.",
-    beds: 4
+    price: 145000,
+    image: "https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?q=80&w=1974",
+    desc: "Il massimo della libertà off-road con finiture in pelle e domotica integrata."
   },
   {
     id: 2,
-    name: "Hymer B-Class ModernComfort",
-    brand: "Hymer",
-    year: 2023,
+    name: "Grand Palace A-Class",
+    brand: "Hymer Luxury",
     category: "motorhome",
-    price: 110000,
-    image: "https://placehold.co/600x400/1565c0/FFF?text=Hymer+Motorhome",
-    description: "Lusso senza compromessi. Un motorhome spazioso con letto basculante e bagno con doccia separata.",
-    beds: 4
+    price: 280000,
+    image: "https://images.unsplash.com/photo-1513311068544-83e8047d0567?q=80&w=2070",
+    desc: "Una villa su ruote. Garage per auto compatta e suite padronale."
   },
   {
     id: 3,
-    name: "Adria Coral XL",
+    name: "Family Explorer Plus",
     brand: "Adria",
-    year: 2021,
     category: "mansardato",
-    price: 58000,
-    image: "https://placehold.co/600x400/c62828/FFF?text=Adria+Mansardato",
-    description: "Ideale per le famiglie numerose. L'ampia mansarda offre un comodo letto matrimoniale sempre pronto.",
-    beds: 6
-  },
-  {
-    id: 4,
-    name: "Mercedes-Benz Marco Polo",
-    brand: "Mercedes",
-    year: 2023,
-    category: "van",
-    price: 72000,
-    image: "https://placehold.co/600x400/424242/FFF?text=Marco+Polo",
-    description: "Eleganza e versatilità. Interni curati nei minimi dettagli e guidabilità pari a quella di un'auto.",
-    beds: 4
+    price: 78000,
+    image: "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?q=80&w=2070",
+    desc: "Spazio per 6 persone senza rinunciare allo stile contemporaneo."
   }
 ];
