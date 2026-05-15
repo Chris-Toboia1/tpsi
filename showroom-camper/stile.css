@@ -613,6 +613,33 @@ footer {
 
   .grid {
     grid-template-columns: repeat(3, 1fr);
+    .card {
+  min-height: 100%;
+}
+
+.card p {
+  color: var(--text-soft);
+}
+
+.card .price {
+  color: var(--primary-light);
+}
+
+.card button {
+  flex: 1;
+}
+
+.modal-content img {
+  object-fit: cover;
+}
+
+.site-nav {
+  z-index: 999;
+}
+
+.hamburger-btn {
+  z-index: 1000;
+}
   }
 }
 
