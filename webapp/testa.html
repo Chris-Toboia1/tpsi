@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CamperLife — Showroom di Camper e Van.">
+  <title>CamperLife — La tua casa su ruote</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
 
+  <header class="site-header" id="site-header">
+    <div class="header-inner container">
+      <a href="#Home" class="logo" aria-label="Torna alla home">CamperLife</a>
+      
+      <button class="hamburger-btn" id="hamburger-btn" aria-label="Apri menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="site-nav" id="main-nav">
+        <ul class="nav-list">
+          <li><a href="#Home" class="nav-link active">Home</a></li>
+          <li><a href="#Catalogo" class="nav-link">Catalogo</a></li>
+          <li><a href="#Preferiti" class="nav-link">Preferiti</a></li>
+          <li><a href="#Contatti" class="nav-link">Contatti</a></li>
+        </ul>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Cambia tema">🌗</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="Home" class="hero-section">
+      <div class="container hero-content">
+        <h1>Esplora il Mondo in Libertà</h1>
+        <p>Scopri la nostra selezione dei migliori camper, van e motorhome per le tue avventure.</p>
+        <a href="#Catalogo" class="btn btn-primary">Esplora il Catalogo</a>
+      </div>
+    </section>
+
+    <section id="Catalogo" class="catalog-section container">
+      <div class="section-header">
+        <h2>Il Nostro Catalogo</h2>
+        <p>Trovati <span id="results-count">0</span> veicoli disponibili.</p>
+      </div>
+
+      <div class="filters-bar">
+        <div class="search-wrapper">
+          <label for="search-input" class="sr-only">Cerca camper</label>
+          <input type="text" id="search-input" placeholder="Cerca per nome, marca o keyword...">
+        </div>
+        <div class="filters-selects">
+          <label for="category-filter" class="sr-only">Categoria</label>
+          <select id="category-filter">
+            <option value="all">Tutte le Categorie</option>
+            <option value="van">Van / Furgonati</option>
+            <option value="motorhome">Motorhome</option>
+            <option value="mansardato">Mansardati</option>
+          </select>
+
+          <label for="sort-select" class="sr-only">Ordina per</label>
+          <select id="sort-select">
+            <option value="name-asc">Nome (A-Z)</option>
+            <option value="price-asc">Prezzo (Crescente)</option>
+            <option value="price-desc">Prezzo (Decrescente)</option>
+          </select>
+          <button id="reset-btn" class="btn btn-secondary">Reset</button>
+        </div>
+      </div>
+
+      <div class="catalog-grid" id="catalog-grid">
+        </div>
+    </section>
+
+    <section id="Preferiti" class="favorites-section container">
+      <div class="section-header">
+        <h2>I Tuoi Preferiti</h2>
+      </div>
+      <p id="favorites-empty" class="empty-message">Non hai ancora salvato nessun camper.</p>
+      <div class="catalog-grid" id="favorites-grid">
+        </div>
+    </section>
+
+    <section id="Contatti" class="contact-section container">
+      <div class="section-header">
+        <h2>Contattaci</h2>
+        <p>Hai bisogno di info per il noleggio o l'acquisto? Scrivici!</p>
+      </div>
+      <div class="contact-wrapper">
+        <form id="contact-form" class="contact-form" novalidate>
+          <div class="form-group">
+            <label for="input-name">Nome *</label>
+            <input type="text" id="input-name" required>
+            <span class="error-msg" id="error-name">Inserisci un nome valido (min 2 caratteri).</span>
+          </div>
+          <div class="form-group">
+            <label for="input-email">Email *</label>
+            <input type="email" id="input-email" required>
+            <span class="error-msg" id="error-email">Inserisci un indirizzo email valido.</span>
+          </div>
+          <div class="form-group">
+            <label for="input-message">Messaggio *</label>
+            <textarea id="input-message" rows="4" required></textarea>
+            <span class="error-msg" id="error-message">Il messaggio deve contenere almeno 10 caratteri.</span>
+          </div>
+          <button type="submit" class="btn btn-primary">Invia Messaggio</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="footer-year"></span> CamperLife. Progetto scolastico.</p>
+    </div>
+  </footer>
+
+  <div class="modal-overlay hidden" id="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-container" id="modal-container">
+      <button class="modal-close" id="modal-close" aria-label="Chiudi dettaglio">&times;</button>
+      <div class="modal-content" id="modal-content">
+        </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
