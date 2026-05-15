@@ -171,9 +171,15 @@ themeBtn.addEventListener('click', () => {
 });
 
 // ---- MENU HAMBURGER ----
-document.getElementById('hamburger-btn').addEventListener('click', () => {
-  document.getElementById('main-nav').classList.toggle('nav-open');
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const mainNav = document.getElementById('main-nav');
+
+hamburgerBtn.addEventListener('click', () => {
+  mainNav.classList.toggle('active');
 });
+
+
+
 
 // Init
 renderCatalog();
