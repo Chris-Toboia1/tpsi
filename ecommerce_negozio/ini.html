@@ -1,73 +1,111 @@
+<!-- ini.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurazione Store</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
-        .container { background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        input, button { margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; }
-        button { background: #8a2be2; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold;}
-        button:hover { background: #5c0f99; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurazione Store</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px}
+.box{background:#fff;padding:20px;max-width:600px;margin:auto;border:1px solid #ccc}
+input{width:100%;margin-bottom:20px}
+button{padding:10px;cursor:pointer}
+</style>
+
 </head>
+
 <body>
-<div class="container">
-    <h2>Configurazione Iniziale dello Store</h2>
-    <label><strong>1. Carica uno o più file CSV:</strong></label>
-    <input type="file" id="csvFiles" accept=".csv" multiple>
-    <label><strong>2. Carica file CSS personalizzato (Opzionale):</strong></label>
-    <input type="file" id="cssFile" accept=".css">
-    <button onclick="elaboraDati()">Genera Piattaforma</button>
-    <p id="status"></p>
+
+<div class="box">
+
+<h1>Configurazione Store</h1>
+
+<p>Carica file CSV</p>
+
+<input type="file" id="csvFiles" accept=".csv" multiple>
+
+<p>Carica CSS personalizzato (opzionale)</p>
+
+<input type="file" id="cssFile" accept=".css">
+
+<button onclick="generaStore()">Genera Store</button>
+
+<p id="messaggio"></p>
+
 </div>
 
 <script>
-    async function elaboraDati() {
-        const csvInput = document.getElementById('csvFiles');
-        const cssInput = document.getElementById('cssFile');
-        const statusMsg = document.getElementById('status');
-        
-        if (csvInput.files.length === 0) {
-            statusMsg.innerText = "Errore: Inserisci almeno un file CSV.";
-            statusMsg.style.color = "red";
-            return;
-        }
 
-        statusMsg.innerText = "Elaborazione in corso...";
-        statusMsg.style.color = "black";
+async function generaStore(){
 
-        let tuttiIProdotti = [];
-        let idCounter = 1;
+let csvInput=document.getElementById("csvFiles");
+let cssInput=document.getElementById("cssFile");
+let messaggio=document.getElementById("messaggio");
 
-        for (let file of csvInput.files) {
-            const text = await file.text();
-            const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-            
-            parsed.data.forEach(row => {
-                row._id = idCounter++; 
-                tuttiIProdotti.push(row);
-            });
-        }
+if(csvInput.files.length===0){
 
-        localStorage.setItem('storeDati', JSON.stringify(tuttiIProdotti));
+messaggio.innerText="Inserisci almeno un CSV";
 
-        if (cssInput.files.length > 0) {
-            const cssText = await cssInput.files[0].text();
-            localStorage.setItem('storeCss', cssText);
-        } else {
-            localStorage.removeItem('storeCss');
-        }
+return;
+}
 
-        statusMsg.innerText = "Configurazione completata! Reindirizzamento in corso...";
-        statusMsg.style.color = "green";
-        
-        setTimeout(() => {
-            window.location.href = "store.html";
-        }, 1500);
-    }
+messaggio.innerText="Elaborazione...";
+
+let prodotti=[];
+let id=1;
+
+for(let i=0;i<csvInput.files.length;i++){
+
+let file=csvInput.files[i];
+
+let testo=await file.text();
+
+let risultato=Papa.parse(testo,{
+header:true,
+skipEmptyLines:true
+});
+
+for(let j=0;j<risultato.data.length;j++){
+
+let riga=risultato.data[j];
+
+riga._id=id;
+
+id++;
+
+prodotti.push(riga);
+}
+}
+
+localStorage.setItem(
+"storeDati",
+JSON.stringify(prodotti)
+);
+
+if(cssInput.files.length>0){
+
+let css=await cssInput.files[0].text();
+
+localStorage.setItem("storeCss",css);
+
+}else{
+
+localStorage.removeItem("storeCss");
+}
+
+messaggio.innerText="Store creato";
+
+setTimeout(function(){
+
+window.location.href="store.html";
+
+},1000);
+}
+
 </script>
+
 </body>
 </html>
