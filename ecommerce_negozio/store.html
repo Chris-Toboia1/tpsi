@@ -3,7 +3,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Store</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -39,14 +39,14 @@ button{padding:10px;cursor:pointer}
 </div>
 
 <div id="dettaglio" class="hidden">
-<button onclick="mostraCatalogo()">Torna al catalogo</button>
+<button onclick="mostraCatalogo()">Torna</button>
 <div id="contenutoDettaglio"></div>
 </div>
 
 <div id="carrello" class="hidden">
 <h2>Carrello</h2>
 <div id="listaCarrello"></div>
-<h3>Totale: € <span id="totaleCarrello">0.00</span></h3>
+<h3>Totale € <span id="totaleCarrello">0.00</span></h3>
 <button onclick="stampaPDF()">Scarica PDF</button>
 </div>
 
@@ -83,13 +83,13 @@ aggiornaCarrello();
 }
 
 function trovaCampo(objetto,testo){
+
 let chiavi=Object.keys(oggetto);
 
 for(let i=0;i<chiavi.length;i++){
-let key=chiavi[i];
 
-if(key.toLowerCase().includes(testo)){
-return key;
+if(chiavi[i].toLowerCase().includes(testo)){
+return chiavi[i];
 }
 }
 
@@ -106,10 +106,12 @@ for(let i=0;i<datiStore.length;i++){
 
 let item=datiStore[i];
 
-let keyImmagine=trovaCampo(item,"immagin");
-let keyPrezzo=trovaCampo(item,"prezz");
-let keyMarca=trovaCampo(item,"marca");
-let keyModello=trovaCampo(item,"modello");
+let chiavi=Object.keys(item);
+
+let keyImmagine=trovaCampo(item,"immagin")||"";
+let keyPrezzo=trovaCampo(item,"prezz")||"";
+let keyMarca=trovaCampo(item,"marca")||"";
+let keyModello=trovaCampo(item,"modello")||chiavi[0];
 
 let img=item[keyImmagine]||"https://via.placeholder.com/200";
 
@@ -136,7 +138,7 @@ div.innerHTML=`
 <h2>${titolo}</h2>
 <div class="price">€ ${prezzo}</div>
 <button onclick="vediDettaglio(${item._id})">Dettagli</button>
-<button onclick="aggiungiAlCarrello(${item._id})">Aggiungi al carrello</button>
+<button onclick="aggiungiAlCarrello(${item._id})">Aggiungi</button>
 `;
 
 contenitore.appendChild(div);
@@ -158,7 +160,7 @@ let contenitore=document.getElementById("contenutoDettaglio");
 
 contenitore.innerHTML="";
 
-let keyImmagine=trovaCampo(item,"immagin");
+let keyImmagine=trovaCampo(item,"immagin")||"";
 
 if(item[keyImmagine]){
 
@@ -167,7 +169,7 @@ contenitore.innerHTML+=`
 `;
 }
 
-contenitore.innerHTML+=`<h2>Dettagli prodotto</h2>`;
+contenitore.innerHTML+=`<h2>Dettagli</h2>`;
 
 for(let chiave in item){
 
@@ -181,7 +183,7 @@ contenitore.innerHTML+=`
 
 contenitore.innerHTML+=`
 <button onclick="aggiungiAlCarrello(${id})">
-Aggiungi al carrello
+Aggiungi
 </button>
 `;
 
@@ -221,8 +223,10 @@ for(let i=0;i<carrello.length;i++){
 
 let item=carrello[i];
 
-let keyPrezzo=trovaCampo(item,"prezz");
-let keyModello=trovaCampo(item,"modello");
+let chiavi=Object.keys(item);
+
+let keyPrezzo=trovaCampo(item,"prezz")||"";
+let keyModello=trovaCampo(item,"modello")||chiavi[0];
 
 let prezzo=0;
 
@@ -241,9 +245,7 @@ div.innerHTML=`
 <br>
 € ${prezzo.toFixed(2)}
 <br><br>
-<button onclick="rimuoviDalCarrello(${i})">
-Rimuovi
-</button>
+<button onclick="rimuoviDalCarrello(${i})">Rimuovi</button>
 `;
 
 contenitore.appendChild(div);
@@ -281,8 +283,10 @@ for(let i=0;i<carrello.length;i++){
 
 let item=carrello[i];
 
-let keyPrezzo=trovaCampo(item,"prezz");
-let keyModello=trovaCampo(item,"modello");
+let chiavi=Object.keys(item);
+
+let keyPrezzo=trovaCampo(item,"prezz")||"";
+let keyModello=trovaCampo(item,"modello")||chiavi[0];
 
 let nome=item[keyModello]||"Prodotto";
 
