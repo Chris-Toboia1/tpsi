@@ -2,31 +2,56 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Configurazione Shop</title>
-    <style>body { font-family: sans-serif; padding: 20px; }</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Configurazione</title>
 </head>
 <body>
-    <h2>Configura il tuo Store Universale</h2>
-    <label>URL del file CSV (es. alimentari.csv):</label><br>
-    <input type="text" id="csvUrl" placeholder="percorso/del/file.csv" style="width: 300px;"><br><br>
-    
-    <label>URL del file CSS (opzionale per grafica personalizzata):</label><br>
-    <input type="text" id="cssUrl" placeholder="style.css" style="width: 300px;"><br><br>
 
-    <button onclick="salvaConfigurazione()">Salva e Vai allo Shop</button>
+<h1>Configurazione Store</h1>
 
-    <script>
-        function salvaConfigurazione() {
-            const csv = document.getElementById('csvUrl').value;
-            const css = document.getElementById('cssUrl').value;
-            
-            // Salviamo nel browser le impostazioni
-            localStorage.setItem('shop_csv', csv);
-            localStorage.setItem('shop_css', css);
-            
-            alert("Configurazione salvata! Reindirizzamento allo shop...");
-            window.location.href = 'index.html'; // Vai al negozio
-        }
-    </script>
+<h3>Carica CSV</h3>
+<input type="file" id="csvFile">
+
+<h3>Carica CSS personalizzato</h3>
+<input type="file" id="cssFile">
+
+<script>
+
+document.getElementById("csvFile").addEventListener("change", function(e) {
+
+    const file = e.target.files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+        localStorage.setItem("csvData", event.target.result);
+
+        alert("CSV caricato correttamente");
+    };
+
+    reader.readAsText(file);
+});
+
+
+document.getElementById("cssFile").addEventListener("change", function(e) {
+
+    const file = e.target.files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+        localStorage.setItem("customCSS", event.target.result);
+
+        alert("CSS caricato correttamente");
+    };
+
+    reader.readAsText(file);
+});
+
+</script>
+
 </body>
 </html>
