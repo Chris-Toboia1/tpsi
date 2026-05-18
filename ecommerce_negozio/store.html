@@ -32,12 +32,13 @@
 <h2>Carrello</h2>
 <div id="listaCarrello"></div>
 <h3 id="tot"></h3>
-<button onclick="pdf()">Scarica PDF</button>
+<button onclick="fattura()">Scaricare fattura</button>
 </div>
 
 </div>
 
 <script>
+
 let dati=JSON.parse(localStorage.getItem("store"))||[];
 
 let css=localStorage.getItem("css");
@@ -63,7 +64,10 @@ dettaglio.classList.add("hidden");
 carrello.classList.add("hidden");
 
 if(v=="catalogo")catalogo.classList.remove("hidden");
-if(v=="carrello"){carrello.classList.remove("hidden");renderCart()}
+if(v=="carrello"){
+carrello.classList.remove("hidden");
+renderCart();
+}
 }
 
 function render(){
@@ -136,7 +140,7 @@ save();
 renderCart();
 }
 
-function pdf(){
+function fattura(){
 const {jsPDF}=window.jspdf;
 let d=new jsPDF();
 
@@ -154,11 +158,12 @@ y+=10;
 
 d.text("Totale € "+t.toFixed(2),10,y);
 
-d.save("ordine.pdf");
+d.save("fattura.pdf");
 }
 
 if(dati.length)render();
 save();
+
 </script>
 
 </body>
