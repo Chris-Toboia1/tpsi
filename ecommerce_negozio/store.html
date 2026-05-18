@@ -4,12 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Store</title>
-
 <link rel="stylesheet" href="style.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style id="customCss"></style>
 </head>
 
 <body>
@@ -17,24 +12,14 @@
 <header>
 <div>STORE</div>
 <div>
-<button onclick="view('catalogo')">Catalogo</button>
-<button onclick="view('carrello')">Carrello (<span id="n">0</span>)</button>
+<button onclick="location.href='cart.html'">
+Carrello (<span id="n">0</span>)
+</button>
 </div>
 </header>
 
 <div class="container">
-
 <div id="catalogo"></div>
-
-<div id="dettaglio" class="hidden"></div>
-
-<div id="carrello" class="hidden">
-<h2>Carrello</h2>
-<div id="listaCarrello"></div>
-<h3 id="tot"></h3>
-<button onclick="fattura()">Scaricare fattura</button>
-</div>
-
 </div>
 
 <script>
@@ -42,18 +27,7 @@
 let dati=JSON.parse(localStorage.getItem("store"))||[];
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
 
-let css=localStorage.getItem("css");
-if(css)document.getElementById("customCss").innerHTML=css;
-
-const catalogo=document.getElementById("catalogo");
-const dettaglio=document.getElementById("dettaglio");
-const carrello=document.getElementById("carrello");
-const n=document.getElementById("n");
-
-function save(){
-localStorage.setItem("cart",JSON.stringify(cart));
-n.innerText=cart.length;
-}
+document.getElementById("n").innerText=cart.length;
 
 function campo(o,k){
 for(let i in o){
@@ -62,23 +36,10 @@ if(i.toLowerCase().includes(k))return i;
 return "";
 }
 
-function view(v){
-
-catalogo.classList.add("hidden");
-dettaglio.classList.add("hidden");
-carrello.classList.add("hidden");
-
-if(v==="catalogo")catalogo.classList.remove("hidden");
-
-if(v==="carrello"){
-carrello.classList.remove("hidden");
-renderCart();
-}
-}
-
 function render(){
 
-catalogo.innerHTML="";
+let c=document.getElementById("catalogo");
+c.innerHTML="";
 
 dati.forEach(x=>{
 
@@ -86,118 +47,32 @@ let i=campo(x,"immagin");
 let p=campo(x,"prezz");
 let m=campo(x,"modello")||campo(x,"marca")||"prodotto";
 
-catalogo.innerHTML+=`
+c.innerHTML+=`
 <div class="card">
 <img src="${x[i]||''}">
 <h3>${x[m]||""}</h3>
 <div class="price">€ ${x[p]||0}</div>
+
 <button onclick="detail(${x._id})">Dettagli</button>
 <button onclick="add(${x._id})">Aggiungi</button>
+
 </div>
 `;
 });
-
 }
 
 function detail(id){
-
-let x=dati.find(a=>a._id==id);
-
-dettaglio.innerHTML="";
-
-let html=`
-<button onclick="view('catalogo')">← Torna al catalogo</button>
-
-<div class="detail-page">
-`;
-
-for(let k in x){
-if(k!="_id"){
-html+=`<p><b>${k}</b>: ${x[k]}</p>`;
-}
-}
-
-html+=`
-<br>
-<button onclick="add(${id})">Aggiungi al carrello</button>
-</div>
-`;
-
-dettaglio.innerHTML=html;
-
-view("dettaglio");
+location.href="product.html?id="+id;
 }
 
 function add(id){
-
 let x=dati.find(a=>a._id==id);
-if(!x)return;
-
 cart.push(x);
-save();
-
+localStorage.setItem("cart",JSON.stringify(cart));
+document.getElementById("n").innerText=cart.length;
 }
 
-function renderCart(){
-
-let tot=0;
-let lista=document.getElementById("listaCarrello");
-lista.innerHTML="";
-
-cart.forEach((x,i)=>{
-
-let p=campo(x,"prezz");
-let price=parseFloat(x[p]||0);
-tot+=price;
-
-lista.innerHTML+=`
-<div class="cart">
-<b>${x.modello||x.marca||"item"}</b>
-€ ${price.toFixed(2)}
-<button onclick="rem(${i})">X</button>
-</div>
-`;
-
-});
-
-document.getElementById("tot").innerText="Totale € "+tot.toFixed(2);
-
-}
-
-function rem(i){
-cart.splice(i,1);
-save();
-renderCart();
-}
-
-function fattura(){
-
-const {jsPDF}=window.jspdf;
-let d=new jsPDF();
-
-let y=20;
-let t=0;
-
-cart.forEach((x,i)=>{
-
-let p=campo(x,"prezz");
-let price=parseFloat(x[p]||0);
-t+=price;
-
-d.text(`${i+1}) ${x.modello||x.marca||""} €${price.toFixed(2)}`,10,y);
-y+=10;
-
-});
-
-d.text("Totale € "+t.toFixed(2),10,y);
-
-d.save("fattura.pdf");
-
-}
-
-save();
-if(dati.length)render();
-view("catalogo");
+render();
 
 </script>
 
