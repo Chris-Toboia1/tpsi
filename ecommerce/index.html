@@ -3,36 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Universale</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <style>
-        /* CSS di base, sovrascrivibile dal CSS personalizzato */
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        .grid { display: flex; flex-wrap: wrap; gap: 20px; }
-        .card { border: 1px solid #ccc; padding: 15px; width: 250px; border-radius: 8px; text-align: center; }
-        .card img { max-width: 100%; height: auto; border-radius: 4px; }
-        .prezzo { font-weight: bold; color: #e74c3c; font-size: 1.2em; }
-        #basket { margin-top: 40px; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; }
-    </style>
+    <title>Temporary Store</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
-    <h1 id="shopTitle">Caricamento Shop...</h1>
-    
-    <div class="grid" id="productGrid">
-        </div>
+<header>
+    <h1>Festival Store</h1>
+    <a href="cart.html">🛒 Carrello</a>
+</header>
 
-    <div id="basket">
-        <h2>Il tuo Basket</h2>
-        <ul id="cartItems"></ul>
-        <h3>Totale: €<span id="cartTotal">0.00</span></h3>
-        <button onclick="stampaPDF()" style="padding: 10px 20px; background: green; color: white; border: none; cursor: pointer;">
-            Conferma e Stampa PDF
-        </button>
-    </div>
+<div id="products" class="grid"></div>
 
-    <script src="app.js"></script>
+<script src="app.js"></script>
+
 </body>
 </html>
