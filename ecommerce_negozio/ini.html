@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurazione Store</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, button { margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-weight: bold;}
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h2>Configurazione Iniziale dello Store</h2>
+    
+    <label><strong>1. Carica uno o più file CSV:</strong></label>
+    <input type="file" id="csvFiles" accept=".csv" multiple>
+    
+    <label><strong>2. Carica file CSS personalizzato (Opzionale):</strong></label>
+    <input type="file" id="cssFile" accept=".css">
+    
+    <button onclick="elaboraDati()">Genera Piattaforma</button>
+    <p id="status"></p>
+</div>
+
+<script>
+    async function elaboraDati() {
+        const csvInput = document.getElementById('csvFiles');
+        const cssInput = document.getElementById('cssFile');
+        const statusMsg = document.getElementById('status');
+        
+        if (csvInput.files.length === 0) {
+            statusMsg.innerText = "Errore: Inserisci almeno un file CSV.";
+            statusMsg.style.color = "red";
+            return;
+        }
+
+        statusMsg.innerText = "Elaborazione in corso...";
+        statusMsg.style.color = "black";
+
+        let tuttiIProdotti = [];
+        let idCounter = 1;
+      
+        for (let file of csvInput.files) {
+            const text = await file.text();
+            const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+            
+            parsed.data.forEach(row => {
+                // Rende il sistema universale: aggiunge un ID univoco a prescindere dal CSV
+                row._id = idCounter++; 
+                tuttiIProdotti.push(row);
+            });
+        }
+
+        localStorage.setItem('storeDati', JSON.stringify(tuttiIProdotti));
+
+        if (cssInput.files.length > 0) {
+            const cssText = await cssInput.files[0].text();
+            localStorage.setItem('storeCss', cssText);
+        } else {
+            localStorage.removeItem('storeCss');
+        }
+
+        statusMsg.innerText = "Configurazione completata! Reindirizzamento in corso...";
+        statusMsg.style.color = "green";
+        
+        setTimeout(() => {
+            window.location.href = "store.html";
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>
