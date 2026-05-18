@@ -1,221 +1,327 @@
+<!-- store.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Universale</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <style id="dynamic-style"></style>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fafafa; }
-        header { background: #222; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;}
-        header nav button { background: none; color: white; border: 1px solid white; padding: 8px 15px; cursor: pointer; border-radius: 4px;}
-        header nav button:hover { background: white; color: #222; }
-        
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
-        .card img { max-width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; }
-        .card h3 { margin: 10px 0; font-size: 1.2em; }
-        .card .prezzo { font-size: 1.5em; color: #e44d26; font-weight: bold; margin: 10px 0; }
-        .btn { background: #28a745; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 4px; margin-top: 5px;}
-        .btn-info { background: #17a2b8; }
-        
-        .view { display: none; }
-        .view.active { display: block; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store</title>
 
-        .detail-container { background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd; }
-        .detail-container img { max-width: 400px; display: block; margin-bottom: 20px; }
-        .feature-list { list-style: none; padding: 0; }
-        .feature-list li { padding: 8px 0; border-bottom: 1px solid #eee; }
-        
-        .cart-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ccc; background: white;}
-        .totale { font-size: 1.8em; text-align: right; margin-top: 20px; font-weight: bold;}
-    </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style id="dynamic-style"></style>
+
+<style>
+body{font-family:Arial;margin:0;background:#f5f5f5}
+header{background:#222;color:#fff;padding:15px}
+header button{padding:10px;margin-right:10px;cursor:pointer}
+.container{padding:20px}
+.hidden{display:none}
+.product{background:#fff;border:1px solid #ccc;padding:15px;margin-bottom:20px}
+.product img{width:200px;height:200px;object-fit:contain}
+.price{color:red;font-size:20px;font-weight:bold}
+.cart-item{background:#fff;padding:10px;margin-bottom:10px;border:1px solid #ccc}
+button{padding:10px;cursor:pointer}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>Il Mio Store</h1>
-        <nav>
-            <button onclick="mostraVista('catalogo')">Catalogo</button>
-            <button onclick="mostraVista('carrello')">Carrello (<span id="cart-count">0</span>)</button>
-        </nav>
-    </header>
+<header>
+<h1>Il Mio Store</h1>
+<button onclick="mostraCatalogo()">Catalogo</button>
+<button onclick="mostraCarrello()">Carrello (<span id="cartCount">0</span>)</button>
+</header>
 
-    <div class="container">
-        <div id="catalogo" class="view active">
-            <div class="grid" id="product-grid"></div>
-        </div>
+<div class="container">
 
-        <div id="dettaglio" class="view">
-            <button class="btn btn-info" style="width: auto; margin-bottom: 20px;" onclick="mostraVista('catalogo')">← Torna al Catalogo</button>
-            <div id="product-detail" class="detail-container"></div>
-        </div>
+<div id="catalogo">
+<div id="listaProdotti"></div>
+</div>
 
-        <div id="carrello" class="view">
-            <h2>Il tuo Basket</h2>
-            <div id="cart-items"></div>
-            <div class="totale">Totale: € <span id="cart-total">0.00</span></div>
-            <button class="btn" style="background:#007bff; margin-top: 20px;" onclick="stampaPDF()">Conferma e Stampa Ordine (PDF)</button>
-        </div>
-    </div>
+<div id="dettaglio" class="hidden">
+<button onclick="mostraCatalogo()">Torna al catalogo</button>
+<div id="contenutoDettaglio"></div>
+</div>
+
+<div id="carrello" class="hidden">
+<h2>Carrello</h2>
+<div id="listaCarrello"></div>
+<h3>Totale: € <span id="totaleCarrello">0.00</span></h3>
+<button onclick="stampaPDF()">Scarica PDF</button>
+</div>
+
+</div>
 
 <script>
-    const datiStore = JSON.parse(localStorage.getItem('storeDati')) || [];
-    const cssPersonalizzato = localStorage.getItem('storeCss');
-    let basket = [];
 
-    if (cssPersonalizzato) {
-        document.getElementById('dynamic-style').innerText = cssPersonalizzato;
-    }
+const datiStore=JSON.parse(localStorage.getItem("storeDati"))||[];
+const cssPersonalizzato=localStorage.getItem("storeCss");
 
-    function mostraVista(vistaId) {
-        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-        document.getElementById(vistaId).classList.add('active');
-        if(vistaId === 'carrello') aggiornaCarrelloUI();
-    }
+if(cssPersonalizzato){
+document.getElementById("dynamic-style").innerHTML=cssPersonalizzato;
+}
 
-    function renderizzaCatalogo() {
-        const grid = document.getElementById('product-grid');
-        grid.innerHTML = '';
+let carrello=[];
 
-        datiStore.forEach(item => {
-            const chiavi = Object.keys(item);
-            const keyImmagine = chiavi.find(k => k.toLowerCase().includes('immagin')) || '';
-            const keyPrezzo = chiavi.find(k => k.toLowerCase().includes('prezz')) || '';
-            const keyMarca = chiavi.find(k => k.toLowerCase() === 'marca') || '';
-            const keyModello = chiavi.find(k => k.toLowerCase() === 'modello') || chiavi[0];
+function mostraCatalogo(){
+document.getElementById("catalogo").classList.remove("hidden");
+document.getElementById("dettaglio").classList.add("hidden");
+document.getElementById("carrello").classList.add("hidden");
+}
 
-            const imgUrl = keyImmagine && item[keyImmagine] ? item[keyImmagine] : 'https://via.placeholder.com/250x200?text=No+Image';
-            const prezzo = keyPrezzo && item[keyPrezzo] ? parseFloat(item[keyPrezzo].replace(',','.')).toFixed(2) : 'N/A';
-            const titolo = `${keyMarca ? item[keyMarca] + ' ' : ''}${item[keyModello] || 'Prodotto'}`;
+function mostraDettaglio(){
+document.getElementById("catalogo").classList.add("hidden");
+document.getElementById("dettaglio").classList.remove("hidden");
+document.getElementById("carrello").classList.add("hidden");
+}
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <img src="${imgUrl}" alt="${titolo}">
-                <h3>${titolo}</h3>
-                <div class="prezzo">€ ${prezzo}</div>
-                <button class="btn btn-info" onclick="vediDettaglio(${item._id})">Vedi Dettagli</button>
-                <button class="btn" onclick="aggiungiAlCarrello(${item._id})">Aggiungi al Basket</button>
-            `;
-            grid.appendChild(card);
-        });
-    }
+function mostraCarrello(){
+document.getElementById("catalogo").classList.add("hidden");
+document.getElementById("dettaglio").classList.add("hidden");
+document.getElementById("carrello").classList.remove("hidden");
+aggiornaCarrello();
+}
 
-    function vediDettaglio(id) {
-        const item = datiStore.find(p => p._id === id);
-        const container = document.getElementById('product-detail');
-        
-        const chiavi = Object.keys(item);
-        const keyImmagine = chiavi.find(k => k.toLowerCase().includes('immagin'));
-        const imgUrl = keyImmagine && item[keyImmagine] ? item[keyImmagine] : '';
+function trovaCampo(objetto,testo){
+let chiavi=Object.keys(oggetto);
 
-        let html = imgUrl ? `<img src="${imgUrl}" alt="Immagine Prodotto">` : '';
-        html += `<h2>Dettagli Prodotto</h2><ul class="feature-list">`;
-        
-        for (let [chiave, valore] of Object.entries(item)) {
-            if (chiave !== '_id' && chiave !== keyImmagine && valore) {
-                const etichetta = chiave.charAt(0).toUpperCase() + chiave.slice(1);
-                html += `<li><strong>${etichetta}:</strong> ${valore}</li>`;
-            }
-        }
-        
-        html += `</ul><button class="btn" onclick="aggiungiAlCarrello(${id})">Aggiungi al Basket</button>`;
-        container.innerHTML = html;
-        mostraVista('dettaglio');
-    }
+for(let i=0;i<chiavi.length;i++){
+let key=chiavi[i];
 
-    function aggiungiAlCarrello(id) {
-        const item = datiStore.find(p => p._id === id);
-        basket.push(item);
-        document.getElementById('cart-count').innerText = basket.length;
-    }
+if(key.toLowerCase().includes(testo)){
+return key;
+}
+}
 
-    function aggiornaCarrelloUI() {
-        const container = document.getElementById('cart-items');
-        container.innerHTML = '';
-        let totale = 0;
+return "";
+}
 
-        if(basket.length === 0) {
-            container.innerHTML = '<p>Il tuo carrello è vuoto.</p>';
-            document.getElementById('cart-total').innerText = '0.00';
-            return;
-        }
+function renderizzaCatalogo(){
 
-        basket.forEach((item, index) => {
-            const chiavi = Object.keys(item);
-            const keyPrezzo = chiavi.find(k => k.toLowerCase().includes('prezz'));
-            const keyModello = chiavi.find(k => k.toLowerCase() === 'modello') || chiavi[0];
-            
-            const prezzo = keyPrezzo && item[keyPrezzo] ? parseFloat(item[keyPrezzo].replace(',','.')) : 0;
-            totale += prezzo;
+let contenitore=document.getElementById("listaProdotti");
 
-            container.innerHTML += `
-                <div class="cart-item">
-                    <span>${item[keyModello] || 'Prodotto Sconosciuto'}</span>
-                    <span>€ ${prezzo.toFixed(2)} 
-                        <button onclick="rimuoviDaCarrello(${index})" style="margin-left:15px; color:red; border:none; background:none; cursor:pointer;">X</button>
-                    </span>
-                </div>
-            `;
-        });
-        document.getElementById('cart-total').innerText = totale.toFixed(2);
-    }
+contenitore.innerHTML="";
 
-    function rimuoviDaCarrello(index) {
-        basket.splice(index, 1);
-        document.getElementById('cart-count').innerText = basket.length;
-        aggiornaCarrelloUI();
-    }
+for(let i=0;i<datiStore.length;i++){
 
-    function stampaPDF() {
-        if(basket.length === 0) return alert("Il carrello è vuoto!");
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFontSize(22);
-        doc.text("Ricevuta Ordine", 20, 20);
-        
-        doc.setFontSize(12);
-        let yPos = 40;
-        let totale = 0;
+let item=datiStore[i];
 
-        basket.forEach((item, index) => {
-            const chiavi = Object.keys(item);
-            const keyPrezzo = chiavi.find(k => k.toLowerCase().includes('prezz'));
-            const keyModello = chiavi.find(k => k.toLowerCase() === 'modello') || chiavi[0];
-            
-            const nome = item[keyModello] ? item[keyModello].substring(0, 40) : 'Prodotto';
-            const prezzo = keyPrezzo && item[keyPrezzo] ? parseFloat(item[keyPrezzo].replace(',','.')) : 0;
-            totale += prezzo;
+let keyImmagine=trovaCampo(item,"immagin");
+let keyPrezzo=trovaCampo(item,"prezz");
+let keyMarca=trovaCampo(item,"marca");
+let keyModello=trovaCampo(item,"modello");
 
-            doc.text(`${index + 1}. ${nome}`, 20, yPos);
-            doc.text(`EUR ${prezzo.toFixed(2)}`, 160, yPos);
-            yPos += 10;
-        });
+let img=item[keyImmagine]||"https://via.placeholder.com/200";
 
-        doc.setLineWidth(0.5);
-        doc.line(20, yPos, 190, yPos);
-        yPos += 10;
-        
-        doc.setFontSize(14);
-        doc.text("TOTALE:", 120, yPos);
-        doc.text(`EUR ${totale.toFixed(2)}`, 160, yPos);
+let prezzo="0.00";
 
-        doc.save("ordine_store.pdf");
-    }
+if(item[keyPrezzo]){
+prezzo=parseFloat(item[keyPrezzo].replace(",",".")).toFixed(2);
+}
 
-    if (datiStore.length > 0) {
-        renderizzaCatalogo();
-    } else {
-        document.getElementById('product-grid').innerHTML = '<p>Nessun dato trovato. Vai su <a href="ini.html">ini.html</a> per configurare lo store.</p>';
-    }
+let titolo="";
+
+if(keyMarca){
+titolo+=item[keyMarca]+" ";
+}
+
+titolo+=item[keyModello]||"Prodotto";
+
+let div=document.createElement("div");
+
+div.className="product";
+
+div.innerHTML=`
+<img src="${img}">
+<h2>${titolo}</h2>
+<div class="price">€ ${prezzo}</div>
+<button onclick="vediDettaglio(${item._id})">Dettagli</button>
+<button onclick="aggiungiAlCarrello(${item._id})">Aggiungi al carrello</button>
+`;
+
+contenitore.appendChild(div);
+}
+}
+
+function vediDettaglio(id){
+
+let item=null;
+
+for(let i=0;i<datiStore.length;i++){
+
+if(datiStore[i]._id==id){
+item=datiStore[i];
+}
+}
+
+let contenitore=document.getElementById("contenutoDettaglio");
+
+contenitore.innerHTML="";
+
+let keyImmagine=trovaCampo(item,"immagin");
+
+if(item[keyImmagine]){
+
+contenitore.innerHTML+=`
+<img src="${item[keyImmagine]}" width="300">
+`;
+}
+
+contenitore.innerHTML+=`<h2>Dettagli prodotto</h2>`;
+
+for(let chiave in item){
+
+if(chiave!=="_id"&&chiave!==keyImmagine){
+
+contenitore.innerHTML+=`
+<p><strong>${chiave}</strong>: ${item[chiave]}</p>
+`;
+}
+}
+
+contenitore.innerHTML+=`
+<button onclick="aggiungiAlCarrello(${id})">
+Aggiungi al carrello
+</button>
+`;
+
+mostraDettaglio();
+}
+
+function aggiungiAlCarrello(id){
+
+for(let i=0;i<datiStore.length;i++){
+
+if(datiStore[i]._id==id){
+carrello.push(datiStore[i]);
+}
+}
+
+document.getElementById("cartCount").innerText=carrello.length;
+}
+
+function aggiornaCarrello(){
+
+let contenitore=document.getElementById("listaCarrello");
+
+contenitore.innerHTML="";
+
+let totale=0;
+
+if(carrello.length===0){
+
+contenitore.innerHTML="<p>Carrello vuoto</p>";
+
+document.getElementById("totaleCarrello").innerText="0.00";
+
+return;
+}
+
+for(let i=0;i<carrello.length;i++){
+
+let item=carrello[i];
+
+let keyPrezzo=trovaCampo(item,"prezz");
+let keyModello=trovaCampo(item,"modello");
+
+let prezzo=0;
+
+if(item[keyPrezzo]){
+prezzo=parseFloat(item[keyPrezzo].replace(",","."));
+}
+
+totale+=prezzo;
+
+let div=document.createElement("div");
+
+div.className="cart-item";
+
+div.innerHTML=`
+<strong>${item[keyModello]}</strong>
+<br>
+€ ${prezzo.toFixed(2)}
+<br><br>
+<button onclick="rimuoviDalCarrello(${i})">
+Rimuovi
+</button>
+`;
+
+contenitore.appendChild(div);
+}
+
+document.getElementById("totaleCarrello").innerText=totale.toFixed(2);
+}
+
+function rimuoviDalCarrello(index){
+
+carrello.splice(index,1);
+
+document.getElementById("cartCount").innerText=carrello.length;
+
+aggiornaCarrello();
+}
+
+function stampaPDF(){
+
+if(carrello.length===0){
+alert("Carrello vuoto");
+return;
+}
+
+const {jsPDF}=window.jspdf;
+
+const doc=new jsPDF();
+
+doc.text("Ordine Store",20,20);
+
+let y=40;
+let totale=0;
+
+for(let i=0;i<carrello.length;i++){
+
+let item=carrello[i];
+
+let keyPrezzo=trovaCampo(item,"prezz");
+let keyModello=trovaCampo(item,"modello");
+
+let nome=item[keyModello]||"Prodotto";
+
+let prezzo=0;
+
+if(item[keyPrezzo]){
+prezzo=parseFloat(item[keyPrezzo].replace(",","."));
+}
+
+totale+=prezzo;
+
+doc.text(
+`${i+1}. ${nome} - EUR ${prezzo.toFixed(2)}`,
+20,
+y
+);
+
+y+=10;
+}
+
+y+=10;
+
+doc.text(`Totale: EUR ${totale.toFixed(2)}`,20,y);
+
+doc.save("ordine.pdf");
+}
+
+if(datiStore.length>0){
+
+renderizzaCatalogo();
+
+}else{
+
+document.getElementById("listaProdotti").innerHTML=`
+<p>Nessun prodotto trovato. Vai su ini.html</p>
+`;
+}
 
 </script>
+
 </body>
 </html>
