@@ -4,23 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Store</title>
+
+<link rel="stylesheet" href="style.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<style id="css"></style>
-
-<style>
-body{font-family:Arial;background:#eee;margin:0}
-header{background:#111;color:#fff;padding:15px;display:flex;justify-content:space-between}
-button{padding:10px;cursor:pointer}
-.container{padding:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.card{background:#fff;padding:10px}
-.card img{width:100%;height:180px;object-fit:cover}
-.hidden{display:none}
-.detail{background:#fff;padding:15px}
-.cart{background:#fff;padding:10px;margin-bottom:10px}
-.price{color:red;font-weight:bold}
-</style>
+<style id="customCss"></style>
 </head>
 
 <body>
@@ -43,21 +32,30 @@ button{padding:10px;cursor:pointer}
 <h2>Carrello</h2>
 <div id="listaCarrello"></div>
 <h3 id="tot"></h3>
-<button onclick="pdf()">PDF</button>
+<button onclick="pdf()">Scarica PDF</button>
 </div>
 
 </div>
 
 <script>
 let dati=JSON.parse(localStorage.getItem("store"))||[];
+
 let css=localStorage.getItem("css");
-if(css)document.getElementById("css").innerHTML=css;
+if(css)document.getElementById("customCss").innerHTML=css;
 
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
 
-function save(){localStorage.setItem("cart",JSON.stringify(cart));document.getElementById("n").innerText=cart.length}
+function save(){
+localStorage.setItem("cart",JSON.stringify(cart));
+document.getElementById("n").innerText=cart.length;
+}
 
-function campo(o,k){for(let i in o){if(i.toLowerCase().includes(k))return i}return""}
+function campo(o,k){
+for(let i in o){
+if(i.toLowerCase().includes(k))return i;
+}
+return "";
+}
 
 function view(v){
 catalogo.classList.add("hidden");
@@ -71,10 +69,11 @@ if(v=="carrello"){carrello.classList.remove("hidden");renderCart()}
 function render(){
 let c=document.getElementById("catalogo");
 c.innerHTML="";
+
 dati.forEach(x=>{
 let i=campo(x,"immagin");
 let p=campo(x,"prezz");
-let m=campo(x,"modello")||"prodotto";
+let m=campo(x,"modello")||campo(x,"marca")||"prodotto";
 
 c.innerHTML+=`
 <div class="card">
@@ -82,19 +81,24 @@ c.innerHTML+=`
 <h3>${x[m]||""}</h3>
 <div class="price">€ ${x[p]||0}</div>
 <button onclick="detail(${x._id})">Dettagli</button>
-<button onclick="add(${x._id})">+</button>
-</div>`;
+<button onclick="add(${x._id})">Aggiungi</button>
+</div>
+`;
 });
 }
 
 function detail(id){
 let x=dati.find(a=>a._id==id);
 let c=document.getElementById("dettaglio");
-c.innerHTML="<button onclick='view(\"catalogo\")'>back</button>";
+
+c.innerHTML="<button onclick='view(\"catalogo\")'>Indietro</button>";
+
 for(let k in x){
 if(k!="_id")c.innerHTML+=`<p><b>${k}</b> ${x[k]}</p>`;
 }
-c.innerHTML+=`<button onclick="add(${id})">Aggiungi</button>`;
+
+c.innerHTML+=`<button onclick="add(${id})">Aggiungi al carrello</button>`;
+
 view("dettaglio");
 }
 
@@ -108,29 +112,48 @@ function renderCart(){
 let c=document.getElementById("listaCarrello");
 c.innerHTML="";
 let t=0;
+
 cart.forEach((x,i)=>{
 let p=campo(x,"prezz");
 let price=parseFloat(x[p]||0);
 t+=price;
-c.innerHTML+=`<div class="cart"><b>${x.modello||"item"}</b> €${price}<button onclick="rem(${i})">X</button></div>`;
+
+c.innerHTML+=`
+<div class="cart">
+<b>${x.modello||x.marca||"item"}</b>
+€ ${price.toFixed(2)}
+<button onclick="rem(${i})">X</button>
+</div>
+`;
 });
+
 document.getElementById("tot").innerText="Totale € "+t.toFixed(2);
 }
 
-function rem(i){cart.splice(i,1);save();renderCart()}
+function rem(i){
+cart.splice(i,1);
+save();
+renderCart();
+}
 
 function pdf(){
 const {jsPDF}=window.jspdf;
 let d=new jsPDF();
-let y=20,t=0;
+
+let y=20;
+let t=0;
+
 cart.forEach((x,i)=>{
 let p=campo(x,"prezz");
 let price=parseFloat(x[p]||0);
 t+=price;
-d.text(`${i+1}) ${x.modello||""} €${price}`,10,y);
+
+d.text(`${i+1}) ${x.modello||x.marca||""} €${price.toFixed(2)}`,10,y);
 y+=10;
 });
-d.text("Totale "+t.toFixed(2),10,y);
+
+d.text("Totale € "+t.toFixed(2),10,y);
+
 d.save("ordine.pdf");
 }
 
