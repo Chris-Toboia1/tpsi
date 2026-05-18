@@ -21,6 +21,7 @@
 
 <script>
 async function genera(){
+
 let csv=document.getElementById("csvFiles");
 let css=document.getElementById("cssFile");
 let msg=document.getElementById("msg");
@@ -38,7 +39,6 @@ let id=1;
 for(let f of csv.files){
 let t=await f.text();
 let r=Papa.parse(t,{header:true,skipEmptyLines:true});
-
 r.data.forEach(x=>{
 x._id=id++;
 prodotti.push(x);
@@ -54,9 +54,7 @@ localStorage.setItem("css",c);
 localStorage.removeItem("css");
 }
 
-setTimeout(()=>{
-location.href="store.html";
-},800);
+setTimeout(()=>location.href="store.html",800);
 }
 </script>
 
