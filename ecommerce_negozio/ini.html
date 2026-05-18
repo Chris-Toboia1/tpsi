@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
+
 <body>
 
 <div class="box">
@@ -29,12 +30,15 @@ msg.innerText="Carica CSV";
 return;
 }
 
+msg.innerText="Creazione store...";
+
 let prodotti=[];
 let id=1;
 
 for(let f of csv.files){
 let t=await f.text();
 let r=Papa.parse(t,{header:true,skipEmptyLines:true});
+
 r.data.forEach(x=>{
 x._id=id++;
 prodotti.push(x);
@@ -50,9 +54,9 @@ localStorage.setItem("css",c);
 localStorage.removeItem("css");
 }
 
-msg.innerText="OK";
-
-setTimeout(()=>location.href="store.html",800);
+setTimeout(()=>{
+location.href="store.html";
+},800);
 }
 </script>
 
