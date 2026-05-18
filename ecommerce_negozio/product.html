@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dettaglio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+<div>DETTAGLIO PRODOTTO</div>
+<div>
+<button onclick="location.href='store.html'">Catalogo</button>
+<button onclick="location.href='cart.html'">Carrello</button>
+</div>
+</header>
+
+<div class="container">
+<div id="box"></div>
+</div>
+
+<script>
+
+let dati=JSON.parse(localStorage.getItem("store"))||[];
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+
+let id=parseInt(new URLSearchParams(location.search).get("id"));
+
+function campo(o,k){
+for(let i in o){
+if(i.toLowerCase().includes(k))return i;
+}
+return "";
+}
+
+let x=dati.find(a=>a._id==id);
+
+let i=campo(x,"immagin");
+let p=campo(x,"prezz");
+
+let html=`
+<div class="detail-page">
+
+<img src="${x[i]||''}">
+
+<h2>${x.modello||x.marca||""}</h2>
+<h3 class="price">€ ${x[p]||0}</h3>
+`;
+
+for(let k in x){
+if(k!="_id"){
+html+=`<p><b>${k}</b>: ${x[k]}</p>`;
+}
+}
+
+html+=`
+<br>
+<button onclick="add()">Aggiungi al carrello</button>
+
+</div>
+`;
+
+document.getElementById("box").innerHTML=html;
+
+function add(){
+cart.push(x);
+localStorage.setItem("cart",JSON.stringify(cart));
+alert("Aggiunto al carrello");
+}
+
+</script>
+
+</body>
+</html>
