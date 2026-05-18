@@ -3,7 +3,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Configurazione Store</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -11,30 +11,25 @@
 <style>
 body{font-family:Arial;background:#f5f5f5;padding:20px}
 .box{background:#fff;padding:20px;max-width:600px;margin:auto;border:1px solid #ccc}
-input{width:100%;margin-bottom:20px}
+input{width:100%;margin-bottom:15px}
 button{padding:10px;cursor:pointer}
 </style>
-
 </head>
 
 <body>
 
 <div class="box">
-
 <h1>Configurazione Store</h1>
 
-<p>Carica file CSV</p>
-
+<p>Carica CSV</p>
 <input type="file" id="csvFiles" accept=".csv" multiple>
 
-<p>Carica CSS personalizzato (opzionale)</p>
-
+<p>Carica CSS opzionale</p>
 <input type="file" id="cssFile" accept=".css">
 
 <button onclick="generaStore()">Genera Store</button>
 
 <p id="messaggio"></p>
-
 </div>
 
 <script>
@@ -46,9 +41,7 @@ let cssInput=document.getElementById("cssFile");
 let messaggio=document.getElementById("messaggio");
 
 if(csvInput.files.length===0){
-
 messaggio.innerText="Inserisci almeno un CSV";
-
 return;
 }
 
