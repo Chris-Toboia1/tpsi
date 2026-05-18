@@ -1,104 +1,59 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Configurazione Store</title>
-<link rel="stylesheet" href="style.css">
+<title>Config Store</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
 <style>
 body{font-family:Arial;background:#f5f5f5;padding:20px}
-.box{background:#fff;padding:20px;max-width:600px;margin:auto;border:1px solid #ccc}
-input{width:100%;margin-bottom:15px}
-button{padding:10px;cursor:pointer}
+.box{max-width:600px;margin:auto;background:#fff;padding:20px}
+input,button{width:100%;padding:10px;margin-top:10px}
+button{cursor:pointer}
 </style>
 </head>
-
 <body>
-
 <div class="box">
-<h1>Configurazione Store</h1>
-
-<p>Carica CSV</p>
-<input type="file" id="csvFiles" accept=".csv" multiple>
-
-<p>Carica CSS opzionale</p>
+<h1>Config Store</h1>
+<input type="file" id="csvFiles" multiple accept=".csv">
 <input type="file" id="cssFile" accept=".css">
-
-<button onclick="generaStore()">Genera Store</button>
-
-<p id="messaggio"></p>
+<button onclick="genera()">Genera</button>
+<p id="msg"></p>
 </div>
 
 <script>
+async function genera(){
+let csv=document.getElementById("csvFiles");
+let css=document.getElementById("cssFile");
+let msg=document.getElementById("msg");
 
-async function generaStore(){
-
-let csvInput=document.getElementById("csvFiles");
-let cssInput=document.getElementById("cssFile");
-let messaggio=document.getElementById("messaggio");
-
-if(csvInput.files.length===0){
-messaggio.innerText="Inserisci almeno un CSV";
-return;
-}
-
-messaggio.innerText="Elaborazione...";
+if(csv.files.length==0){msg.innerText="Carica CSV";return}
 
 let prodotti=[];
 let id=1;
 
-for(let i=0;i<csvInput.files.length;i++){
-
-let file=csvInput.files[i];
-
-let testo=await file.text();
-
-let risultato=Papa.parse(testo,{
-header:true,
-skipEmptyLines:true
+for(let f of csv.files){
+let t=await f.text();
+let r=Papa.parse(t,{header:true,skipEmptyLines:true});
+r.data.forEach(x=>{
+x._id=id++;
+prodotti.push(x);
 });
-
-for(let j=0;j<risultato.data.length;j++){
-
-let riga=risultato.data[j];
-
-riga._id=id;
-
-id++;
-
-prodotti.push(riga);
-}
 }
 
-localStorage.setItem(
-"storeDati",
-JSON.stringify(prodotti)
-);
+localStorage.setItem("store",JSON.stringify(prodotti));
 
-if(cssInput.files.length>0){
-
-let css=await cssInput.files[0].text();
-
-localStorage.setItem("storeCss",css);
-
+if(css.files.length){
+let c=await css.files[0].text();
+localStorage.setItem("css",c);
 }else{
-
-localStorage.removeItem("storeCss");
+localStorage.removeItem("css");
 }
 
-messaggio.innerText="Store creato";
+msg.innerText="OK";
 
-setTimeout(function(){
-
-window.location.href="store.html";
-
-},1000);
+setTimeout(()=>location.href="store.html",800);
 }
-
 </script>
-
 </body>
 </html>
