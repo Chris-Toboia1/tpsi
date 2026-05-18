@@ -63,18 +63,25 @@ return "";
 }
 
 function view(v){
+
 catalogo.classList.add("hidden");
 dettaglio.classList.add("hidden");
 carrello.classList.add("hidden");
 
 if(v==="catalogo")catalogo.classList.remove("hidden");
-if(v==="carrello"){carrello.classList.remove("hidden");renderCart()}
+
+if(v==="carrello"){
+carrello.classList.remove("hidden");
+renderCart();
+}
 }
 
 function render(){
+
 catalogo.innerHTML="";
 
 dati.forEach(x=>{
+
 let i=campo(x,"immagin");
 let p=campo(x,"prezz");
 let m=campo(x,"modello")||campo(x,"marca")||"prodotto";
@@ -89,34 +96,56 @@ catalogo.innerHTML+=`
 </div>
 `;
 });
+
 }
 
 function detail(id){
+
 let x=dati.find(a=>a._id==id);
 
-dettaglio.innerHTML="<button onclick='view(\"catalogo\")'>Indietro</button>";
+dettaglio.innerHTML="";
+
+let html=`
+<button onclick="view('catalogo')">← Torna al catalogo</button>
+
+<div class="detail-page">
+`;
 
 for(let k in x){
-if(k!="_id")dettaglio.innerHTML+=`<p><b>${k}</b>: ${x[k]}</p>`;
+if(k!="_id"){
+html+=`<p><b>${k}</b>: ${x[k]}</p>`;
+}
 }
 
-dettaglio.innerHTML+=`<button onclick="add(${id})">Aggiungi al carrello</button>`;
+html+=`
+<br>
+<button onclick="add(${id})">Aggiungi al carrello</button>
+</div>
+`;
+
+dettaglio.innerHTML=html;
 
 view("dettaglio");
 }
 
 function add(id){
+
 let x=dati.find(a=>a._id==id);
+if(!x)return;
+
 cart.push(x);
 save();
+
 }
 
 function renderCart(){
+
 let tot=0;
 let lista=document.getElementById("listaCarrello");
 lista.innerHTML="";
 
 cart.forEach((x,i)=>{
+
 let p=campo(x,"prezz");
 let price=parseFloat(x[p]||0);
 tot+=price;
@@ -128,9 +157,11 @@ lista.innerHTML+=`
 <button onclick="rem(${i})">X</button>
 </div>
 `;
+
 });
 
 document.getElementById("tot").innerText="Totale € "+tot.toFixed(2);
+
 }
 
 function rem(i){
@@ -140,6 +171,7 @@ renderCart();
 }
 
 function fattura(){
+
 const {jsPDF}=window.jspdf;
 let d=new jsPDF();
 
@@ -147,17 +179,20 @@ let y=20;
 let t=0;
 
 cart.forEach((x,i)=>{
+
 let p=campo(x,"prezz");
 let price=parseFloat(x[p]||0);
 t+=price;
 
 d.text(`${i+1}) ${x.modello||x.marca||""} €${price.toFixed(2)}`,10,y);
 y+=10;
+
 });
 
 d.text("Totale € "+t.toFixed(2),10,y);
 
 d.save("fattura.pdf");
+
 }
 
 save();
