@@ -4,20 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Config Store</title>
+<link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<style>
-body{font-family:Arial;background:#f5f5f5;padding:20px}
-.box{max-width:600px;margin:auto;background:#fff;padding:20px}
-input,button{width:100%;padding:10px;margin-top:10px}
-button{cursor:pointer}
-</style>
 </head>
 <body>
+
 <div class="box">
 <h1>Config Store</h1>
+
 <input type="file" id="csvFiles" multiple accept=".csv">
 <input type="file" id="cssFile" accept=".css">
-<button onclick="genera()">Genera</button>
+<button onclick="genera()">Genera Store</button>
 <p id="msg"></p>
 </div>
 
@@ -27,7 +24,10 @@ let csv=document.getElementById("csvFiles");
 let css=document.getElementById("cssFile");
 let msg=document.getElementById("msg");
 
-if(csv.files.length==0){msg.innerText="Carica CSV";return}
+if(csv.files.length==0){
+msg.innerText="Carica CSV";
+return;
+}
 
 let prodotti=[];
 let id=1;
@@ -55,5 +55,6 @@ msg.innerText="OK";
 setTimeout(()=>location.href="store.html",800);
 }
 </script>
+
 </body>
 </html>
