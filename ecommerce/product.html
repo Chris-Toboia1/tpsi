@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+<div id="product"></div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+Papa.parse("products.csv", {
+    download: true,
+    header: true,
+    complete: function(results) {
+
+        const product = results.data.find(p => p.id === id);
+
+        document.getElementById("product").innerHTML = `
+
+            <div class="card">
+                <img src="${product.immagine}">
+
+                <div class="card-content">
+                    <h1>${product.marca}</h1>
+                    <h2>${product.modello}</h2>
+
+                    <p>${product.descrizione}</p>
+
+                    <h2>€ ${product.prezzo}</h2>
+
+                    <button onclick='addToCart(${JSON.stringify(product)})'>
+                        Aggiungi al carrello
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+});
+
+function addToCart(product) {
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart.push(product);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    alert("Prodotto aggiunto al carrello");
+}
+
+</script>
+
+</body>
+</html>
