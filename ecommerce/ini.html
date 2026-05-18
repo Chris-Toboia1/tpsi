@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Configurazione Shop</title>
+    <style>body { font-family: sans-serif; padding: 20px; }</style>
+</head>
+<body>
+    <h2>Configura il tuo Store Universale</h2>
+    <label>URL del file CSV (es. alimentari.csv):</label><br>
+    <input type="text" id="csvUrl" placeholder="percorso/del/file.csv" style="width: 300px;"><br><br>
+    
+    <label>URL del file CSS (opzionale per grafica personalizzata):</label><br>
+    <input type="text" id="cssUrl" placeholder="style.css" style="width: 300px;"><br><br>
 
+    <button onclick="salvaConfigurazione()">Salva e Vai allo Shop</button>
+
+    <script>
+        function salvaConfigurazione() {
+            const csv = document.getElementById('csvUrl').value;
+            const css = document.getElementById('cssUrl').value;
+            
+            // Salviamo nel browser le impostazioni
+            localStorage.setItem('shop_csv', csv);
+            localStorage.setItem('shop_css', css);
+            
+            alert("Configurazione salvata! Reindirizzamento allo shop...");
+            window.location.href = 'index.html'; // Vai al negozio
+        }
+    </script>
+</body>
+</html>
