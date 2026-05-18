@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <input type="file" id="csvFile" accept=".csv">
 
-    <title>Configurazione</title>
-</head>
-<body>
+    <h3>Carica CSS personalizzato (opzionale)</h3>
+    <input type="file" id="cssFile" accept=".css">
 
-<h1>Configurazione Store</h1>
+    <button id="continueBtn">
+        Continua allo Store
+    </button>
 
-<h3>Carica CSV</h3>
-<input type="file" id="csvFile">
-
-<h3>Carica CSS personalizzato</h3>
-<input type="file" id="cssFile">
+</div>
 
 <script>
+
+let csvLoaded = false;
+
+// CARICAMENTO CSV
 
 document.getElementById("csvFile").addEventListener("change", function(e) {
 
     const file = e.target.files[0];
+
+    if(!file) return;
 
     const reader = new FileReader();
 
@@ -28,16 +28,21 @@ document.getElementById("csvFile").addEventListener("change", function(e) {
 
         localStorage.setItem("csvData", event.target.result);
 
+        csvLoaded = true;
+
         alert("CSV caricato correttamente");
     };
 
     reader.readAsText(file);
 });
 
+// CARICAMENTO CSS
 
 document.getElementById("cssFile").addEventListener("change", function(e) {
 
     const file = e.target.files[0];
+
+    if(!file) return;
 
     const reader = new FileReader();
 
@@ -49,6 +54,18 @@ document.getElementById("cssFile").addEventListener("change", function(e) {
     };
 
     reader.readAsText(file);
+});
+
+// PULSANTE CONTINUA
+
+document.getElementById("continueBtn").addEventListener("click", function() {
+
+    if(!localStorage.getItem("csvData")) {
+        alert("Carica prima un file CSV");
+        return;
+    }
+
+    window.location.href = "index.html";
 });
 
 </script>
