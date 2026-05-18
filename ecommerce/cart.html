@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+    <title>Carrello</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<h1>Carrello</h1>
+
+<div id="cart"></div>
+
+<h2 id="total"></h2>
+
+<button onclick="generatePDF()">Stampa PDF</button>
+
+<script>
+
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const container = document.getElementById("cart");
+
+let total = 0;
+
+cart.forEach(product => {
+
+    total += parseFloat(product.prezzo);
+
+    container.innerHTML += `
+        <div class="card">
+            <div class="card-content">
+                <h2>${product.marca}</h2>
+                <h3>${product.modello}</h3>
+                <p>€ ${product.prezzo}</p>
+            </div>
+        </div>
+    `;
+});
+
+document.getElementById("total").innerHTML = `Totale: € ${total.toFixed(2)}`;
+
+async function generatePDF() {
+
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF();
+
+    doc.text("Ordine Festival Store", 20, 20);
+
+    let y = 40;
+
+    cart.forEach(product => {
+
+        doc.text(
+            `${product.marca} - ${product.modello} - € ${product.prezzo}`,
+            20,
+            y
+        );
+
+        y += 10;
+    });
+
+    doc.text(`Totale: € ${total.toFixed(2)}`, 20, y + 10);
+
+    doc.save("ordine.pdf");
+}
+
+</script>
+
+</body>
+</html>
