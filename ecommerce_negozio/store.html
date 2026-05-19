@@ -4,72 +4,126 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Store</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <header>
-<div>STORE</div>
+
+<div class="logo">
+MUSIC MERCH
+</div>
+
 <div>
+
 <button onclick="location.href='cart.html'">
 Carrello (<span id="n">0</span>)
 </button>
+
 </div>
+
 </header>
 
 <div class="container">
+
 <div id="catalogo"></div>
+
 </div>
 
 <script>
 
-let dati=JSON.parse(localStorage.getItem("store"))||[];
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
+let dati=JSON.parse(
+localStorage.getItem("store")
+)||[];
+
+let cart=JSON.parse(
+localStorage.getItem("cart")
+)||[];
 
 document.getElementById("n").innerText=cart.length;
 
 function campo(o,k){
+
 for(let i in o){
-if(i.toLowerCase().includes(k))return i;
+
+if(i.toLowerCase().includes(k)){
+return i;
 }
+
+}
+
 return "";
+
 }
 
 function render(){
 
 let c=document.getElementById("catalogo");
+
 c.innerHTML="";
 
 dati.forEach(x=>{
 
 let i=campo(x,"immagin");
+
 let p=campo(x,"prezz");
-let m=campo(x,"modello")||campo(x,"marca")||"prodotto";
+
+let m=campo(x,"modello")||
+campo(x,"marca")||
+"prodotto";
 
 c.innerHTML+=`
-<div class="card">
-<img src="${x[i]||''}">
-<h3>${x[m]||""}</h3>
-<div class="price">€ ${x[p]||0}</div>
 
-<button onclick="detail(${x._id})">Dettagli</button>
-<button onclick="add(${x._id})">Aggiungi</button>
+<div class="card">
+
+<img src="${x[i]||''}">
+
+<h3>${x[m]||""}</h3>
+
+<div class="price">
+€ ${x[p]||0}
+</div>
+
+<button onclick="detail(${x._id})">
+Dettagli
+</button>
+
+<button onclick="add(${x._id})">
+Aggiungi
+</button>
 
 </div>
+
 `;
+
 });
+
 }
 
 function detail(id){
-location.href="product.html?id="+id;
+
+location.href=
+"product.html?id="+id;
+
 }
 
 function add(id){
+
 let x=dati.find(a=>a._id==id);
+
 cart.push(x);
-localStorage.setItem("cart",JSON.stringify(cart));
-document.getElementById("n").innerText=cart.length;
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+document.getElementById("n").innerText=
+cart.length;
+
 }
 
 render();
