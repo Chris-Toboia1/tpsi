@@ -4,26 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Config Store</title>
+
 <link rel="stylesheet" href="style.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 
 <body>
 
 <div class="box">
+
 <h1>Config Store</h1>
 
 <input type="file" id="csvFiles" multiple accept=".csv">
-<input type="file" id="cssFile" accept=".css">
-<button onclick="genera()">Genera Store</button>
+
+<button onclick="genera()">
+Genera Store
+</button>
+
 <p id="msg"></p>
+
 </div>
 
 <script>
+
 async function genera(){
 
 let csv=document.getElementById("csvFiles");
-let css=document.getElementById("cssFile");
 let msg=document.getElementById("msg");
 
 if(csv.files.length==0){
@@ -37,25 +44,32 @@ let prodotti=[];
 let id=1;
 
 for(let f of csv.files){
+
 let t=await f.text();
-let r=Papa.parse(t,{header:true,skipEmptyLines:true});
+
+let r=Papa.parse(t,{
+header:true,
+skipEmptyLines:true
+});
+
 r.data.forEach(x=>{
 x._id=id++;
 prodotti.push(x);
 });
+
 }
 
-localStorage.setItem("store",JSON.stringify(prodotti));
+localStorage.setItem(
+"store",
+JSON.stringify(prodotti)
+);
 
-if(css.files.length){
-let c=await css.files[0].text();
-localStorage.setItem("css",c);
-}else{
-localStorage.removeItem("css");
+setTimeout(()=>{
+location.href="store.html";
+},800);
+
 }
 
-setTimeout(()=>location.href="store.html",800);
-}
 </script>
 
 </body>
