@@ -4,17 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Carrello</title>
+
 <link rel="stylesheet" href="style.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 
 <body>
 
 <header>
-<div>CARRELLO</div>
-<div>
-<button onclick="location.href='store.html'">Catalogo</button>
+
+<div class="logo">
+CARRELLO
 </div>
+
+<div>
+
+<button onclick="location.href='store.html'">
+Catalogo
+</button>
+
+</div>
+
 </header>
 
 <div class="container">
@@ -23,24 +35,36 @@
 
 <h2 id="tot"></h2>
 
-<button onclick="fattura()">Scaricare fattura</button>
+<button onclick="fattura()">
+Scaricare fattura
+</button>
 
 </div>
 
 <script>
 
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
+let cart=JSON.parse(
+localStorage.getItem("cart")
+)||[];
 
 function campo(o,k){
+
 for(let i in o){
-if(i.toLowerCase().includes(k))return i;
+
+if(i.toLowerCase().includes(k)){
+return i;
 }
+
+}
+
 return "";
+
 }
 
 function render(){
 
 let c=document.getElementById("list");
+
 c.innerHTML="";
 
 let t=0;
@@ -48,48 +72,82 @@ let t=0;
 cart.forEach((x,i)=>{
 
 let p=campo(x,"prezz");
+
 let price=parseFloat(x[p]||0);
+
 t+=price;
 
 c.innerHTML+=`
+
 <div class="cart">
-<b>${x.modello||x.marca||"item"}</b>
+
+<b>
+${x.modello||x.marca||"item"}
+</b>
+
 € ${price.toFixed(2)}
-<button onclick="rem(${i})">X</button>
+
+<button onclick="rem(${i})">
+X
+</button>
+
 </div>
+
 `;
+
 });
 
-document.getElementById("tot").innerText="Totale € "+t.toFixed(2);
+document.getElementById("tot")
+.innerText="Totale € "+t.toFixed(2);
 
 }
 
 function rem(i){
+
 cart.splice(i,1);
-localStorage.setItem("cart",JSON.stringify(cart));
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
 render();
+
 }
 
 function fattura(){
 
 const {jsPDF}=window.jspdf;
+
 let d=new jsPDF();
 
 let y=20;
+
 let t=0;
 
 cart.forEach((x,i)=>{
 
 let p=campo(x,"prezz");
+
 let price=parseFloat(x[p]||0);
+
 t+=price;
 
-d.text(`${i+1}) ${x.modello||x.marca||""} €${price.toFixed(2)}`,10,y);
+d.text(
+`${i+1}) ${x.modello||x.marca||""} €${price.toFixed(2)}`,
+10,
+y
+);
+
 y+=10;
 
 });
 
-d.text("Totale € "+t.toFixed(2),10,y);
+d.text(
+"Totale € "+t.toFixed(2),
+10,
+y
+);
 
 d.save("fattura.pdf");
 
