@@ -28,18 +28,17 @@
                 const tabella = document.getElementById('tabella-covid');
                 const chiavi = Object.keys(ultimi10[0]);
 
-                // Intestazione con ciclo FOR classico
                 let html = '<thead><tr>';
                 for (let k = 0; k < chiavi.length; k++) {
                     html += `<th>${chiavi[k]}</th>`;
                 }
                 html += '</tr></thead><tbody>';
 
-                // CICLO FOR ESTERNO: scorre i 10 giorni (le righe)
+
                 for (let i = 0; i < ultimi10.length; i++) {
                     html += '<tr>';
 
-                    // CICLO FOR INTERNO: scorre le colonne del giorno corrente (le celle)
+
                     for (let j = 0; j < chiavi.length; j++) {
                         let nomeChiave = chiavi[j];
                         let valore = ultimi10[i][nomeChiave];
