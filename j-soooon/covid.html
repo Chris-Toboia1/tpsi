@@ -2,77 +2,60 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dati COVID-19 Italia</title>
     <style>
-        /* CSS minimale per la tabella */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            font-family: sans-serif;
-            font-size: 14px;
-        }
-
-        th, td {
-            border: 1px solid #dddddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        /* Intestazione verde */
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        /* Righe alternate */
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #dddddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
 
     <h2>Andamento Nazionale COVID-19 (Ultimi 10 giorni)</h2>
-
     <table id="tabella-covid"></table>
 
     <script>
         const urlJSON = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json';
 
-        async function mostraDati() {
-            // 1. Scarica e converte il JSON
-            const risposta = await fetch(urlJSON);
-            const dati = await risposta.json();
+        const xhr = new XMLHttpRequest();
 
-            // 2. Prende solo gli ultimi 10 elementi
-            const ultimi10 = dati.slice(-10);
+        xhr.open('GET', urlJSON, true);
 
-            // 3. Estrae le chiavi per le intestazioni
-            const chiavi = Object.keys(ultimi10[0]);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
 
-            // 4. Costruisce l'intestazione
-            let html = '<thead><tr>';
-            chiavi.forEach(chiave => {
-                html += `<th>${chiave}</th>`;
-            });
-            html += '</tr></thead><tbody>';
+                const dati = JSON.parse(xhr.responseText);
+                const ultimi10 = dati.slice(-10);
+                const tabella = document.getElementById('tabella-covid');
+                const chiavi = Object.keys(ultimi10[0]);
 
-            // 5. Costruisce le righe
-            ultimi10.forEach(giorno => {
-                html += '<tr>';
+                let html = '<thead><tr>';
                 chiavi.forEach(chiave => {
-                    html += `<td>${giorno[chiave]}</td>`;
+                    html += `<th>${chiave}</th>`;
                 });
-                html += '</tr>';
-            });
-            html += '</tbody>';
+                html += '</tr></thead><tbody>';
 
-            // 6. Inserisce l'HTML nella tabella
-            document.getElementById('tabella-covid').innerHTML = html;
-        }
+                ultimi10.forEach(giorno => {
+                    html += '<tr>';
+                    chiavi.forEach(chiave => {
+                        html += `<td>${giorno[chiave]}</td>`;
+                    });
+                    html += '</tr>';
+                });
+                html += '</tbody>';
 
-        mostraDati();
+                tabella.innerHTML = html;
+            } else {
+                console.error("Errore nel caricamento dei dati:", xhr.status);
+            }
+        };
+
+        xhr.onerror = function() {
+            console.error("Si è verificato un errore di rete.");
+        };
+
+        xhr.send();
     </script>
 
 </body>
