@@ -1,0 +1,38 @@
+[
+  {
+    "Nazione": "Italia",
+    "Schieramento": "Intesa",
+    "Anno_Ingresso": 1915,
+    "Soldati_Mobilitati": "5.615.000"
+  },
+  {
+    "Nazione": "Francia",
+    "Schieramento": "Intesa",
+    "Anno_Ingresso": 1914,
+    "Soldati_Mobilitati": "8.410.000"
+  },
+  {
+    "Nazione": "Impero Britannico",
+    "Schieramento": "Intesa",
+    "Anno_Ingresso": 1914,
+    "Soldati_Mobilitati": "8.904.467"
+  },
+  {
+    "Nazione": "Impero Russo",
+    "Schieramento": "Intesa",
+    "Anno_Ingresso": 1914,
+    "Soldati_Mobilitati": "12.000.000"
+  },
+  {
+    "Nazione": "Germania",
+    "Schieramento": "Imperi Centrali",
+    "Anno_Ingresso": 1914,
+    "Soldati_Mobilitati": "11.000.000"
+  },
+  {
+    "Nazione": "Austria-Ungheria",
+    "Schieramento": "Imperi Centrali",
+    "Anno_Ingresso": 1914,
+    "Soldati_Mobilitati": "7.800.000"
+  }
+]
