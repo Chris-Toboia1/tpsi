@@ -1,0 +1,143 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f0;
+    color: #333333;
+}
+
+header {
+    background-color: #3b4d3b; /* Verde militare storico */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+}
+
+header p {
+    margin: 0;
+    font-size: 14px;
+    color: #d8e2d8;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+section {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra dei filtri */
+.controlli {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+select, button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #3b4d3b;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #2b382b;
+}
+
+/* Tabella responsive */
+.contenitore-tabella {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #4a5d4a;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Cartina animata */
+.box-mappa {
+    margin: 15px 0;
+}
+
+.sfondo-cartina {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    background-color: #e6dec8;
+    border: 2px solid #8c7b5b;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.fiume {
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    border-left: 3px dashed #3b7ea1;
+    padding-left: 5px;
+    font-size: 12px;
+    color: #1f4e68;
+    font-weight: bold;
+}
+
+.fiume-piave {
+    left: 15%;
+}
+
+.fiume-tagliamento {
+    left: 48%;
+}
+
+.fiume-isonzo {
+    left: 80%;
+}
+
+.pedina-truppe {
+    position: absolute;
+    top: 80px;
+    left: 78%;
+    background-color: #a83232;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    transition: left 1.8s ease-in-out;
+}
