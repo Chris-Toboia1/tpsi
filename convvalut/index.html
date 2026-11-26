@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Convertitore Valute BCE</title>
+    <link rel="stylesheet" href="stile.css">
+</head>
+<body>
+
+    <header>
+        <h1>Convertitore Valute BCE</h1>
+        <p id="data">Caricamento dati in corso...</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Calcola il Cambio</h2>
+
+            <label>Quantità:</label>
+            <input type="number" id="quantita" value="100" oninput="calcola()">
+
+            <label>Da divisa:</label>
+            <select id="da-divisa" onchange="calcola()"></select>
+
+            <label>A divisa:</label>
+            <select id="a-divisa" onchange="calcola()"></select>
+
+            <p id="risultato" class="risultato">Risultato: -</p>
+        </section>
+
+        <section>
+            <h2>Tassi di Cambio (Base 1 Euro)</h2>
+            <table id="tabella-valute"></table>
+        </section>
+    </main>
+
+    <script>
+        // Due liste parallele: una per i nomi delle valute e una per i rispettivi tassi
+        let nomiValute = ["EUR"];
+        let tassiValute = [1.0];
+
+        // Link del file XML della Banca Centrale Europea (passato da un proxy per farlo leggere al browser)
+        const urlXML = 'https://api.allorigins.win/raw?url=https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', urlXML, true);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Legge il testo XML ricevuto
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(xhr.responseText, "text/xml");
+
+                // Prende tutti i tag <Cube> presenti nel file XML
+                const listaCube = xml.getElementsByTagName("Cube");
+
+                for (let i = 0; i < listaCube.length; i++) {
+                    // Controlla se il tag <Cube> contiene la data
+                    let dataTrovata = listaCube[i].getAttribute("time");
+                    if (dataTrovata != null) {
+                        document.getElementById("data").innerText = "Aggiornato al: " + dataTrovata;
+                    }
+
+                    // Controlla se il tag <Cube> contiene una valuta e il suo tasso
+                    let valuta = listaCube[i].getAttribute("currency");
+                    let tasso = listaCube[i].getAttribute("rate");
+
+                    if (valuta != null && tasso != null) {
+                        nomiValute.push(valuta);
+                        tassiValute.push(Number(tasso));
+                    }
+                }
+
+                riempiMenu();
+                creaTabella();
+                calcola();
+            } else {
+                alert("Errore nel caricamento dei dati XML!");
+            }
+        };
+
+        xhr.send();
+
+        // Inserisce le valute nei due menu a tendina (<select>)
+        function riempiMenu() {
+            let menuDa = document.getElementById("da-divisa");
+            let menuA = document.getElementById("a-divisa");
+            let opzioni = "";
+
+            for (let i = 0; i < nomiValute.length; i++) {
+                opzioni += `<option value="${i}">${nomiValute[i]}</option>`;
+            }
+
+            menuDa.innerHTML = opzioni;
+            menuA.innerHTML = opzioni;
+
+            // Imposta di base la seconda valuta (es. USD) nel secondo menu
+            if (nomiValute.length > 1) {
+                menuA.value = "1";
+            }
+        }
+
+        // Esegue il calcolo matematico quando cambi numero o valuta
+        function calcola() {
+            let qta = Number(document.getElementById("quantita").value);
+            let indiceDa = document.getElementById("da-divisa").value;
+            let indiceA = document.getElementById("a-divisa").value;
+
+            // Controllo semplice al posto di isNaN: se il campo è vuoto o negativo si ferma
+            if (qta <= 0 || document.getElementById("quantita").value === "") {
+                document.getElementById("risultato").innerText = "Inserisci una quantità maggiore di 0.";
+                return;
+            }
+
+            let tassoDa = tassiValute[indiceDa];
+            let tassoA = tassiValute[indiceA];
+
+            // Prima converte in Euro, poi nella valuta scelta
+            let inEuro = qta / tassoDa;
+            let totale = inEuro * tassoA;
+
+            document.getElementById("risultato").innerText = 
+                qta + " " + nomiValute[indiceDa] + " = " + totale.toFixed(2) + " " + nomiValute[indiceA];
+        }
+
+        // Crea la tabella HTML come nel tuo primo esempio
+        function creaTabella() {
+            let tabella = document.getElementById("tabella-valute");
+            let html = "<thead><tr><th>Divisa</th><th>Valore per 1 Euro</th></tr></thead><tbody>";
+
+            for (let i = 0; i < nomiValute.length; i++) {
+                html += "<tr>";
+                html += "<td>" + nomiValute[i] + "</td>";
+                html += "<td>" + tassiValute[i] + "</td>";
+                html += "</tr>";
+            }
+
+            html += "</tbody>";
+            tabella.innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>
