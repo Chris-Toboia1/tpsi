@@ -1,0 +1,38 @@
+[
+  {
+    "Nazione": "Italia",
+    "Militari_Caduti": "650.000",
+    "Feriti": "947.000",
+    "Mezzi_e_Artiglierie_Perse": "Oltre 3.150 pezzi di artiglieria persi (gran parte a Caporetto)"
+  },
+  {
+    "Nazione": "Francia",
+    "Militari_Caduti": "1.357.800",
+    "Feriti": "4.266.000",
+    "Mezzi_e_Artiglierie_Perse": "Circa 3.000 cannoni e 800 carri armati"
+  },
+  {
+    "Nazione": "Impero Britannico",
+    "Militari_Caduti": "908.371",
+    "Feriti": "2.090.212",
+    "Mezzi_e_Artiglierie_Perse": "Circa 1.500 artiglierie e 254 navi mercantili/militari"
+  },
+  {
+    "Nazione": "Impero Russo",
+    "Militari_Caduti": "1.700.000",
+    "Feriti": "4.950.000",
+    "Mezzi_e_Artiglierie_Perse": "Oltre 4.000 pezzi di artiglieria e scorte belliche"
+  },
+  {
+    "Nazione": "Germania",
+    "Militari_Caduti": "1.773.700",
+    "Feriti": "4.216.058",
+    "Mezzi_e_Artiglierie_Perse": "5.000 cannoni, 178 sommergibili U-Boot e flotta d'altura"
+  },
+  {
+    "Nazione": "Austria-Ungheria",
+    "Militari_Caduti": "1.200.000",
+    "Feriti": "3.620.000",
+    "Mezzi_e_Artiglierie_Perse": "Oltre 3.500 artiglierie e dissoluzione dell'esercito nel 1918"
+  }
+]
