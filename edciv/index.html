@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prima Guerra Mondiale e Battaglia di Caporetto (1917)</title>
+    <!-- Collegamento al file CSS separato -->
+    <link rel="stylesheet" href="stile.css">
+</head>
+<body>
+
+    <header>
+        <h1>La Prima Guerra Mondiale e la Battaglia di Caporetto (1917)</h1>
+        <p>Fonti: Library of Congress, Encyclopaedia Britannica, USHMM, ArteRicerca</p>
+    </header>
+
+    <main>
+        <!-- Sezione 1: Controlli dinamici (Combo-Box) -->
+        <section class="controlli">
+            <label for="scelta-dataset"><strong>Scegli i dati da visualizzare:</strong></label>
+            <select id="scelta-dataset" onchange="aggiornaTabella()">
+                <option value="aggregati">Dati Aggregati (Paesi + Perdite Umane e Mezzi)</option>
+                <option value="dati1GM">Solo dati1GM.json (Mobilitati e Schieramento)</option>
+                <option value="morti1GM">Solo morti1GM.json (Perdite Umane e Attrezzature)</option>
+                <option value="caporetto">Solo cronologia_caporetto.json (Fasi Battaglia 1917)</option>
+            </select>
+
+            <label for="filtro-alleanza"><strong>Filtra Schieramento:</strong></label>
+            <select id="filtro-alleanza" onchange="aggiornaTabella()">
+                <option value="Tutti">Tutti</option>
+                <option value="Intesa">Triplice Intesa / Alleati</option>
+                <option value="Imperi Centrali">Imperi Centrali</option>
+            </select>
+        </section>
+
+        <!-- Sezione 2: Tabella dinamica -->
+        <section>
+            <h2 id="titolo-tabella">Dati Aggregati Prima Guerra Mondiale</h2>
+            <div class="contenitore-tabella">
+                <table id="tabella-dati"></table>
+            </div>
+        </section>
+
+        <!-- Sezione 3: Mappa semplice con animazione -->
+        <section class="sezione-mappa">
+            <h2>Movimento Truppe: Ritirata dall'Isonzo al Piave (Ottobre - Novembre 1917)</h2>
+            <p id="descrizione-tappa">Premi "Avvia Movimento Truppe" per vedere l'avanzata austro-tedesca.</p>
+            
+            <div class="box-mappa">
+                <!-- Sostituisci src con la tua immagine mappa.jpg se ce l'hai -->
+                <div class="sfondo-cartina">
+                    <span class="fiume fiume-piave">Fiume Piave (Nuova Linea)</span>
+                    <span class="fiume fiume-tagliamento">Fiume Tagliamento</span>
+                    <span class="fiume fiume-isonzo">Fiume Isonzo / Caporetto</span>
+                    <!-- Indicatore animato delle truppe -->
+                    <div id="truppe" class="pedina-truppe">Fronte (24 Ott)</div>
+                </div>
+            </div>
+
+            <button onclick="avviaAnimazione()">Avvia Movimento Truppe</button>
+            <button onclick="resetAnimazione()">Riporta all'Isonzo</button>
+        </section>
+    </main>
+
+    <script>
+        // Variabili globali per salvare i dati dei 3 microservizi JSON
+        let datiGenerali = [];
+        let datiPerdite = [];
+        let datiCaporetto = [];
+
+        // Funzione riutilizzabile basata sul tuo esempio con XMLHttpRequest
+        function caricaJSON(urlFile, callback) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', urlFile, true);
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const dati = JSON.parse(xhr.responseText);
+                    callback(dati);
+                } else {
+                    console.error("Errore nel caricamento di " + urlFile + ":", xhr.status);
+                }
+            };
+
+            xhr.onerror = function() {
+                console.error("Errore di rete nel caricamento di " + urlFile);
+            };
+
+            xhr.send();
+        }
+
+        // Caricamento dei 3 file JSON all'avvio della pagina
+        window.onload = function() {
+            caricaJSON('dati1GM.json', function(risposta1) {
+                datiGenerali = risposta1;
+                
+                caricaJSON('morti1GM.json', function(risposta2) {
+                    datiPerdite = risposta2;
+                    aggiornaTabella(); // Disegna la tabella appena i primi 2 sono pronti
+                });
+            });
+
+            caricaJSON('cronologia_caporetto.json', function(risposta3) {
+                datiCaporetto = risposta3;
+            });
+        };
+
+        // Funzione che unisce i JSON e costruisce la tabella HTML (come nel tuo esempio)
+        function aggiornaTabella() {
+            const scelta = document.getElementById('scelta-dataset').value;
+            const filtro = document.getElementById('filtro-alleanza').value;
+            const titolo = document.getElementById('titolo-tabella');
+            const tabella = document.getElementById('tabella-dati');
+
+            let listaFinale = [];
+
+            if (scelta === 'aggregati') {
+                titolo.innerText = "Dati Aggregati: Mobilitati (dati1GM) + Perdite (morti1GM)";
+                // Unisce i due array JSON confrontando il campo "Nazione"
+                for (let i = 0; i < datiGenerali.length; i++) {
+                    let paese = datiGenerali[i];
+                    let perditaCorrispondente = {};
+
+                    for (let j = 0; j < datiPerdite.length; j++) {
+                        if (datiPerdite[j].Nazione === paese.Nazione) {
+                            perditaCorrispondente = datiPerdite[j];
+                        }
+                    }
+
+                    // Crea un oggetto unico aggregato
+                    listaFinale.push({
+                        Nazione: paese.Nazione,
+                        Schieramento: paese.Schieramento,
+                        Soldati_Mobilitati: paese.Soldati_Mobilitati,
+                        Militari_Caduti: perditaCorrispondente.Militari_Caduti,
+                        Feriti: perditaCorrispondente.Feriti,
+                        Mezzi_e_Artiglierie_Perse: perditaCorrispondente.Mezzi_e_Artiglierie_Perse
+                    });
+                }
+            } else if (scelta === 'dati1GM') {
+                titolo.innerText = "File dati1GM.json - Raccolta Generale 1GM";
+                listaFinale = datiGenerali;
+            } else if (scelta === 'morti1GM') {
+                titolo.innerText = "File morti1GM.json - Perdite Umane e Attrezzature";
+                listaFinale = datiPerdite;
+            } else if (scelta === 'caporetto') {
+                titolo.innerText = "File cronologia_caporetto.json - La Battaglia di Caporetto (1917)";
+                listaFinale = datiCaporetto;
+            }
+
+            // Applica il filtro dello schieramento se presente nella tabella
+            if (filtro !== 'Tutti' && scelta !== 'caporetto') {
+                listaFinale = listaFinale.filter(function(riga) {
+                    return riga.Schieramento === filtro;
+                });
+            }
+
+            if (listaFinale.length === 0) {
+                tabella.innerHTML = "<tr><td>Nessun dato disponibile.</td></tr>";
+                return;
+            }
+
+            // Costruzione dinamica dell'intestazione <thead> e del corpo <tbody>
+            const chiavi = Object.keys(listaFinale[0]);
+            let html = '<thead><tr>';
+
+            for (let k = 0; k < chiavi.length; k++) {
+                // Sostituisce gli underscore con spazi per rendere i titoli leggibili
+                html += `<th>${chiavi[k].replace(/_/g, ' ')}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+
+            for (let i = 0; i < listaFinale.length; i++) {
+                html += '<tr>';
+                for (let j = 0; j < chiavi.length; j++) {
+                    let nomeChiave = chiavi[j];
+                    let valore = listaFinale[i][nomeChiave];
+                    html += `<td>${valore}</td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</tbody>';
+
+            tabella.innerHTML = html;
+        }
+
+        // Semplice animazione CSS per spostare le truppe da Est (Isonzo) a Ovest (Piave)
+        function avviaAnimazione() {
+            const pedina = document.getElementById('truppe');
+            const desc = document.getElementById('descrizione-tappa');
+            
+            pedina.style.left = '45%';
+            pedina.innerText = 'Tagliamento (30 Ott)';
+            desc.innerText = "30 Ottobre 1917: Sfondamento a Caporetto, l'esercito italiano ripiega oltre il Tagliamento.";
+
+            setTimeout(function() {
+                pedina.style.left = '15%';
+                pedina.innerText = 'Linea del Piave (10 Nov)';
+                desc.innerText = "10 Novembre 1917: Il fronte si stabilizza lungo il fiume Piave e sul Monte Grappa.";
+            }, 2000);
+        }
+
+        function resetAnimazione() {
+            const pedina = document.getElementById('truppe');
+            const desc = document.getElementById('descrizione-tappa');
+            pedina.style.left = '78%';
+            pedina.innerText = 'Fronte Isonzo (24 Ott)';
+            desc.innerText = "24 Ottobre 1917: Schieramento iniziale lungo il fiume Isonzo prima dell'attacco.";
+        }
+    </script>
+
+</body>
+</html>
