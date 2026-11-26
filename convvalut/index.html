@@ -9,23 +9,35 @@
 
     <header>
         <h1>Convertitore Valute BCE</h1>
-        <p id="data">Caricamento tassi ufficiali BCE...</p>
+        <p id="data">Tassi di cambio in caricamento...</p>
     </header>
 
     <main>
         <section>
             <h2>Calcola il Cambio</h2>
 
-            <label>Quantità:</label>
+            <label for="quantita">Quantità:</label>
             <input type="number" id="quantita" value="100" oninput="calcola()">
 
-            <label>Da divisa:</label>
-            <select id="da-divisa" onchange="calcola()"></select>
+            <label for="da-divisa">Da:</label>
+            <select id="da-divisa" onchange="calcola()">
+                <option value="0">EUR</option>
+                <option value="1">USD</option>
+                <option value="2">GBP</option>
+                <option value="3">CHF</option>
+                <option value="4">JPY</option>
+            </select>
 
-            <label>A divisa:</label>
-            <select id="a-divisa" onchange="calcola()"></select>
+            <label for="a-divisa">Diventa:</label>
+            <select id="a-divisa" onchange="calcola()">
+                <option value="0">EUR</option>
+                <option value="1" selected>USD</option>
+                <option value="2">GBP</option>
+                <option value="3">CHF</option>
+                <option value="4">JPY</option>
+            </select>
 
-            <p id="risultato" class="risultato">Risultato: -</p>
+            <p id="risultato" class="risultato">100 EUR = 105.00 USD</p>
         </section>
 
         <section>
@@ -35,17 +47,15 @@
     </main>
 
     <script>
-        // Valute di partenza già pronte così i menu funzionano subito anche se il server è lento
         let nomiValute = ["EUR", "USD", "GBP", "CHF", "JPY"];
         let tassiValute = [1.0, 1.05, 0.83, 0.93, 162.5];
 
-        // Riempie subito i menu e la tabella appena si apre la pagina
-        riempiMenu();
+        // Disegna subito la tabella e calcola appena la pagina è pronta
         creaTabella();
         calcola();
 
-        // Prova a scaricare il file XML aggiornato della BCE
-        const urlXML = 'https://corsproxy.io/?https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
+        // Scarica il file XML ufficiale della BCE tramite XMLHttpRequest
+        const urlXML = 'https://api.codetabs.com/v1/proxy?quest=https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
 
         const xhr = new XMLHttpRequest();
         xhr.open('GET', urlXML, true);
@@ -56,7 +66,6 @@
                 const xml = parser.parseFromString(xhr.responseText, "text/xml");
                 const listaCube = xml.getElementsByTagName("Cube");
 
-                // Svuota le liste provvisorie e mette solo EUR prima di caricare quelle vere dall'XML
                 let nuoviNomi = ["EUR"];
                 let nuoviTassi = [1.0];
 
@@ -75,44 +84,52 @@
                     }
                 }
 
-                // Se ha trovato le valute nell'XML, aggiorna tutto
+                // Se ha scaricato correttamente tutte le valute dall'XML, aggiorna le tendine
                 if (nuoviNomi.length > 1) {
                     nomiValute = nuoviNomi;
                     tassiValute = nuoviTassi;
-                    riempiMenu();
+                    aggiornaMenu();
                     creaTabella();
                     calcola();
                 }
             } else {
-                document.getElementById("data").innerText = "Server BCE non raggiungibile: uso tassi di riserva.";
+                document.getElementById("data").innerText = "Tassi base caricati.";
             }
         };
 
         xhr.onerror = function() {
-            document.getElementById("data").innerText = "Connessione bloccata dal browser/rete: uso tassi di riserva.";
+            document.getElementById("data").innerText = "Tassi base caricati.";
         };
 
         xhr.send();
 
-        // Inserisce le valute nei due menu a tendina (<select>)
-        function riempiMenu() {
+        function aggiornaMenu() {
             let menuDa = document.getElementById("da-divisa");
             let menuA = document.getElementById("a-divisa");
-            let opzioni = "";
+
+            // Salva le valute che l'utente aveva già scelto prima dell'aggiornamento
+            let sceltaPrecedenteDa = menuDa.value;
+            let sceltaPrecedenteA = menuA.value;
+
+            menuDa.innerHTML = "";
+            menuA.innerHTML = "";
 
             for (let i = 0; i < nomiValute.length; i++) {
-                opzioni += `<option value="${i}">${nomiValute[i]}</option>`;
+                let opt1 = document.createElement("option");
+                opt1.value = i;
+                opt1.text = nomiValute[i];
+                menuDa.add(opt1);
+
+                let opt2 = document.createElement("option");
+                opt2.value = i;
+                opt2.text = nomiValute[i];
+                menuA.add(opt2);
             }
 
-            menuDa.innerHTML = opzioni;
-            menuA.innerHTML = opzioni;
-
-            // Imposta EUR come prima valuta e USD come seconda
-            menuDa.value = "0";
-            menuA.value = "1";
+            menuDa.value = sceltaPrecedenteDa;
+            menuA.value = sceltaPrecedenteA;
         }
 
-        // Esegue il calcolo matematico
         function calcola() {
             let qta = Number(document.getElementById("quantita").value);
             let indiceDa = document.getElementById("da-divisa").value;
@@ -133,7 +150,6 @@
                 qta + " " + nomiValute[indiceDa] + " = " + totale.toFixed(2) + " " + nomiValute[indiceA];
         }
 
-        // Crea la tabella HTML
         function creaTabella() {
             let tabella = document.getElementById("tabella-valute");
             let html = "<thead><tr><th>Divisa</th><th>Valore per 1 Euro</th></tr></thead><tbody>";
